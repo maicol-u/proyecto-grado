@@ -15,8 +15,8 @@ return new class extends Migration
             $table->unsignedBigInteger('id_usuario');
             $table->unsignedBigInteger('id_invernadero');
             $table->primary(['id_usuario', 'id_invernadero']);
-            $table->foreign('id_usuario')->references('id')->on('usuarios');
-            $table->foreign('id_invernadero')->references('id')->on('invernaderos')->onDelete();
+            $table->foreign('id_usuario')->references('id')->on('users');
+            $table->foreign('id_invernadero')->references('id')->on('invernaderos');
             $table->timestamps();
         });
     }

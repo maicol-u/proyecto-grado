@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Fortify\TwoFactorAuthenticatable;
@@ -61,5 +62,10 @@ class User extends Authenticatable
     public function isCliente()
     {
         return $this->role === self::ROLE_CLIENTE;
+    }
+
+    public function invernaderos(): BelongsToMany
+    {
+        return $this->belongsToMany(Invernadero::class, 'usuario_invernaderos', 'id_usuario', 'id_invernadero');
     }
 }
