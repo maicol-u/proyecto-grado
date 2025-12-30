@@ -13,6 +13,8 @@ return new class extends Migration
     {
         Schema::create('tipos_sensor', function (Blueprint $table) {
             $table->id();
+            $table->string('nombre', 50)->unique();
+            $table->string('unidad', 20)->nullable();
             $table->timestamps();
         });
     }
