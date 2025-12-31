@@ -28,7 +28,7 @@ class Sensor extends Model
         'valor_max' => 'decimal:2',
     ];
 
-     /**
+    /**
      * Sensor pertenece a un invernadero
      */
     public function invernadero(): BelongsTo
