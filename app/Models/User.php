@@ -3,6 +3,8 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use App\Enums\UserRole;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -13,9 +15,6 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable, TwoFactorAuthenticatable;
-
-    const ROLE_ADMIN   = 'admin';
-    const ROLE_CLIENTE = 'cliente';
 
     /**
      * The attributes that are mass assignable.
@@ -51,17 +50,18 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
             'two_factor_confirmed_at' => 'datetime',
+            'rol' => UserRole::class,
         ];
     }
 
     public function isAdmin()
     {
-        return $this->role === self::ROLE_ADMIN;
+        return $this->role === UserRole::ADMIN;
     }
 
     public function isCliente()
     {
-        return $this->role === self::ROLE_CLIENTE;
+        return $this->role ===  UserRole::CLIENTE;
     }
 
     public function invernaderos(): BelongsToMany
