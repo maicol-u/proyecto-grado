@@ -17,7 +17,7 @@ class Invernadero extends Model
     /**
      * Relación muchos a muchos con usuarios
      */
-    public function users(): BelongsToMany
+    public function usuarios(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'usuario_invernaderos', 'id_invernadero', 'id_usuario');
     }

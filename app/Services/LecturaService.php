@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Events\LecturaCreada;
 use App\Models\Lectura;
 
 class LecturaService {
@@ -13,6 +14,7 @@ class LecturaService {
             'valor' => $data['valor'],
         ]);
 
+        event(new LecturaCreada($lectura));
         return $lectura;
     } 
 }
