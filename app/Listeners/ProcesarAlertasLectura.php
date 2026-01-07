@@ -23,9 +23,24 @@ class ProcesarAlertasLectura
     public function handle(LecturaCreada $event): void
     {
         $lectura = $event->lectura;
-        $valMax = $lectura->sensor->valor_max;
-        if ($lectura->valor > $valMax) {
+        $sensor = $lectura->sensor;
+
+        if ($lectura->valor > $sensor->valor_max && $sensor->estado_alerta != 'alto') {
+            $sensor->estado_alerta = 'alto';
+            $sensor->save();
             ProcesarAlertaLecturaJob::dispatch($lectura);
+        } 
+
+        if ($lectura->valor < $sensor->valor_min && $sensor->estado_alerta != 'bajo') {
+            $sensor->estado_alerta = 'bajo';
+            $sensor->save();
+            ProcesarAlertaLecturaJob::dispatch($lectura);
+        } 
+        
+        if($lectura->valor >= $sensor->valor_min && $lectura->valor <= $sensor->valor_max){
+            $sensor->estado_alerta = 'normal';
+            $sensor->save();
         }
+
     }
 }

@@ -44,7 +44,7 @@ class AlertaLecturaNotification extends Notification
 
         return (new MailMessage)
             ->subject($this->titulo)
-            ->greeting('⚠️ Alerta del sistema')
+            ->greeting('⚠️ Alerta en humedad del suelo - '.$this->titulo)
             ->line("Invernadero: {$invernadero->nombre}")
             ->line("Sensor: {$this->lectura->sensor->nombre}")
             ->line("Valor detectado: {$this->lectura->valor}")

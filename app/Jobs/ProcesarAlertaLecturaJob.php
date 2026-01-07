@@ -11,6 +11,9 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
 {
     use Queueable;
 
+    public $tries = 3;
+    public $backoff = 10; // segundos
+
     /**
      * Create a new job instance.
      */
@@ -30,13 +33,24 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
 
         $invernadero = $this->lectura->sensor->invernadero;
         $valMax = $this->lectura->sensor->valor_max;
-
-        dump('Job ejecutado', $valMax);
-        if ($this->lectura->temperatura > $valMax) {
+        $valMin = $this->lectura->sensor->valor_min;
+        
+        if ($this->lectura->valor > $valMax) {
             foreach ($invernadero->usuarios as $usuario) { 
                $usuario->notify(
                     new AlertaLecturaNotification(
-                        'Humedad baja',
+                        'Humedad alta',
+                        $this->lectura
+                    )
+                );
+            }
+        }
+
+        if ($this->lectura->valor < $valMin) {
+            foreach ($invernadero->usuarios as $usuario) { 
+               $usuario->notify(
+                    new AlertaLecturaNotification(
+                        'Humedad Baja',
                         $this->lectura
                     )
                 );

@@ -14,7 +14,7 @@ class MqttListener extends Command
    *
    * @var string
    */
-  protected $signature = 'app:mqtt-listener';
+  protected $signature = 'app:mqtt';
 
   /**
    * The console command description.
@@ -44,20 +44,20 @@ class MqttListener extends Command
 
     $this->info('Conectado a MQTT');
 
-    $mqtt->subscribe('invernaderos/+/sensores', function ($topic, $message) use ($service) {
+    $mqtt->subscribe('invernadero/sensor/humedad/+/', function ($topic, $message) use ($service) {
 
-      $this->info("Datos recibidos: " . $message. ' Topic: ' . $topic);
+      $this->info("Datos recibidos: " . $message . ' Topic: ' . $topic);
       $data = json_decode($message, true);
 
       if (!is_array($data)) {
-          $this->info("Datos no guardados");
-          return;
+        $this->info("Datos no guardados");
+        return;
       }
-      
+
       $service->procesarLectura($data);
-      
+
       $this->info("Datos guardados");
-    });
+    }, 1);
 
     $mqtt->loop(true);
   }
