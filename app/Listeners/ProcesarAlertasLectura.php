@@ -2,6 +2,7 @@
 
 namespace App\Listeners;
 
+use App\Enums\EstadoAlertaSensor;
 use App\Events\LecturaCreada;
 use App\Jobs\ProcesarAlertaLecturaJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -25,20 +26,20 @@ class ProcesarAlertasLectura
         $lectura = $event->lectura;
         $sensor = $lectura->sensor;
 
-        if ($lectura->valor > $sensor->valor_max && $sensor->estado_alerta != 'alto') {
-            $sensor->estado_alerta = 'alto';
+        if ($lectura->valor > $sensor->valor_max && $sensor->estado_alerta !== EstadoAlertaSensor::ALTO) {
+            $sensor->estado_alerta = EstadoAlertaSensor::ALTO;
             $sensor->save();
             ProcesarAlertaLecturaJob::dispatch($lectura);
         } 
 
-        if ($lectura->valor < $sensor->valor_min && $sensor->estado_alerta != 'bajo') {
-            $sensor->estado_alerta = 'bajo';
+        if ($lectura->valor < $sensor->valor_min && $sensor->estado_alerta !== EstadoAlertaSensor::BAJO) {
+            $sensor->estado_alerta = EstadoAlertaSensor::BAJO;
             $sensor->save();
             ProcesarAlertaLecturaJob::dispatch($lectura);
         } 
         
         if($lectura->valor >= $sensor->valor_min && $lectura->valor <= $sensor->valor_max){
-            $sensor->estado_alerta = 'normal';
+            $sensor->estado_alerta = EstadoAlertaSensor::NORMAL;
             $sensor->save();
         }
 

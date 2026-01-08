@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\EstadoAlertaSensor;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -17,6 +18,7 @@ class Sensor extends Model
         'modelo',
         'unidad',
         'estado',
+        'estado_alerta',
         'intervalo_lectura',
         'valor_min',
         'valor_max',
@@ -26,6 +28,7 @@ class Sensor extends Model
         'intervalo_lectura' => 'integer',
         'valor_min' => 'decimal:2',
         'valor_max' => 'decimal:2',
+        'estado_alerta' => EstadoAlertaSensor::class,
     ];
 
     /**

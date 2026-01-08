@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\InvernaderoController;
 use App\Services\LecturaService;
 use Illuminate\Support\Facades\Route;
@@ -16,7 +17,12 @@ Route::get('dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::resource('invernadero', InvernaderoController::class);
+Route::middleware(['auth', 'role:admin'])->group(function () {
+    Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
+    Route::resource('invernadero', InvernaderoController::class);
+});
+
+
 
 
 require __DIR__.'/settings.php';

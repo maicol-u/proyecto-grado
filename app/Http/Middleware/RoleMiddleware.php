@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\UserRole;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -15,13 +16,22 @@ class RoleMiddleware
      */
     public function handle(Request $request, Closure $next, ...$roles): Response
     {
-        if (!auth()->check()) {
-            abort(403);
+       if (!auth()->check()) {
+            abort(403, 'No autenticado');
         }
 
-        if (!in_array(auth()->user()->role, $roles)) {
-            abort(403);
+        $userRole = auth()->user()->role;
+
+        // Convertir roles string a enum
+        $allowedRoles = array_map(
+            fn ($role) => UserRole::from($role),
+            $roles
+        );
+
+        if (!in_array($userRole, $allowedRoles, true)) {
+            abort(403, 'No autorizado');
         }
+
         return $next($request);
     }
 }

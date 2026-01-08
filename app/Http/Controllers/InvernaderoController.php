@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Invernadero;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 
 class InvernaderoController extends Controller
 {
@@ -16,12 +17,18 @@ class InvernaderoController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            $invernaderos = Invernadero::with('users')->get();
+            $invernaderos = Invernadero::with('usuarios')->get();
         } else {
             $invernaderos = $user->invernaderos()->get();
         }
 
-        return response()->json($invernaderos);
+        return Inertia::render('invernaderos/Index', [
+            'invernaderos' => $invernaderos
+        ]);
+    }
+
+    public function create(){
+        return Inertia::render('invernaderos/Create');
     }
 
     /**
@@ -41,13 +48,7 @@ class InvernaderoController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        // Vincular el invernadero al usuario
-        Auth::user()->invernaderos()->attach($invernadero->id);
-
-        return response()->json([
-            'message' => 'Invernadero creado correctamente',
-            'data' => $invernadero
-        ], 201);
+        return redirect()->route('invernadero.index');
     }
 
     /**
