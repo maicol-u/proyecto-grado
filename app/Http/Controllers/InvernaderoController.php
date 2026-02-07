@@ -48,17 +48,23 @@ class InvernaderoController extends Controller
             'descripcion' => $request->descripcion,
         ]);
 
-        return redirect()->route('invernadero.index');
+        return redirect()->route('invernadero.index')->with('success', 'Invernadero creado correctamente');
     }
 
     /**
-     * Mostrar un invernadero específico (solo si pertenece al usuario)
+     * Mostrar un invernadero específico
      */
     public function show(Invernadero $invernadero)
     {
-        $this->authorizeAccess($invernadero);
+        return Inertia::render('invernaderos/Update', ['invernadero' => $invernadero]);
+    }
 
-        return response()->json($invernadero);
+    /**
+     * Mostrar un invernadero específico para editar
+     */
+    public function edit(Invernadero $invernadero)
+    {
+        return Inertia::render('invernaderos/Update', ['invernadero' => $invernadero]);
     }
 
     /**
@@ -66,20 +72,16 @@ class InvernaderoController extends Controller
      */
     public function update(Request $request, Invernadero $invernadero)
     {
-        $this->authorizeAccess($invernadero);
-
-        $request->validate([
+        $data = $request->validate([
             'nombre' => 'required|string|max:100',
             'ubicacion' => 'nullable|string|max:150',
             'descripcion' => 'nullable|string',
         ]);
 
-        $invernadero->update($request->all());
+        $invernadero->update($data);
 
-        return response()->json([
-            'message' => 'Invernadero actualizado',
-            'data' => $invernadero
-        ]);
+        return redirect()->route('invernadero.edit', $invernadero->id)
+            ->with('success', 'Invernadero actualizado correctamente', microtime());
     }
 
     /**
@@ -87,16 +89,12 @@ class InvernaderoController extends Controller
      */
     public function destroy(Invernadero $invernadero)
     {
-        $this->authorizeAccess($invernadero);
-
         // Desvincular usuarios
-        $invernadero->users()->detach();
+        $invernadero->usuarios()->detach();
 
         $invernadero->delete();
 
-        return response()->json([
-            'message' => 'Invernadero eliminado'
-        ]);
+        return redirect()->route('invernadero.index')->with('success', 'Invernadero eliminado correctamente');
     }
 
     /**

@@ -35,17 +35,18 @@ function submit() {
                 </div>
 
                 <div class="grid gap-1 mt-5">
-                    <Label for="locale">Ubicación</Label>
-                    <Input id="locale" class="mt-1 block w-full" name="locale" v-model="form.ubicacion"
+                    <Label for="ubicacion">Ubicación</Label>
+                    <Input id="ubicacion" class="mt-1 block w-full" name="ubicacion" v-model="form.ubicacion"
                         placeholder="Municipio / Vereda / Kilometro" />
+                    <InputError class="mt-1 ms-1" :message="form.errors.ubicacion" />
                 </div>
 
                 <div class="grid gap-1 mt-5">
-                    <Label for="description">Descripción</Label>
-                    <textarea id="description" rows="5" name="description" v-model="form.descripcion"
+                    <Label for="descripcion">Descripción</Label>
+                    <textarea id="descripcion" rows="5" name="descripcion" v-model="form.descripcion"
                         class="placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm focus-visible:ring-blue-500 focus-visible:ring-[2px] aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive mt-1 block w-full">
                     </textarea>
-
+                    <InputError class="mt-1 ms-1" :message="form.errors.descripcion" />
                 </div>
 
                 <div class="flex items-center gap-4 mt-5">
