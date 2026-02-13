@@ -2,8 +2,8 @@
 
 namespace App\Listeners;
 
-use App\Enums\EstadoAlertaSensor;
-use App\Events\LecturaCreada;
+use App\Enums\SensorAlertLevel;
+use App\Events\ReadingCreated;
 use App\Jobs\ProcesarAlertaLecturaJob;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Queue\InteractsWithQueue;
@@ -21,25 +21,25 @@ class ProcesarAlertasLectura
     /**
      * Handle the event.
      */
-    public function handle(LecturaCreada $event): void
+    public function handle(ReadingCreated $event): void
     {
         $lectura = $event->lectura;
         $sensor = $lectura->sensor;
 
-        if ($lectura->valor > $sensor->valor_max && $sensor->estado_alerta !== EstadoAlertaSensor::ALTO) {
-            $sensor->estado_alerta = EstadoAlertaSensor::ALTO;
+        if ($lectura->value > $sensor->max_value && $sensor->alert_level !== SensorAlertLevel::HIGH) {
+            $sensor->alert_level = SensorAlertLevel::HIGH;
             $sensor->save();
             ProcesarAlertaLecturaJob::dispatch($lectura);
         } 
 
-        if ($lectura->valor < $sensor->valor_min && $sensor->estado_alerta !== EstadoAlertaSensor::BAJO) {
-            $sensor->estado_alerta = EstadoAlertaSensor::BAJO;
+        if ($lectura->value < $sensor->min_value && $sensor->alert_level !== SensorAlertLevel::LOW) {
+            $sensor->alert_level = SensorAlertLevel::LOW;
             $sensor->save();
             ProcesarAlertaLecturaJob::dispatch($lectura);
         } 
         
-        if($lectura->valor >= $sensor->valor_min && $lectura->valor <= $sensor->valor_max){
-            $sensor->estado_alerta = EstadoAlertaSensor::NORMAL;
+        if($lectura->value >= $sensor->min_value && $lectura->value <= $sensor->max_value){
+            $sensor->alert_level = SensorAlertLevel::NORMAL;
             $sensor->save();
         }
 

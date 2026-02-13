@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Models\Lectura;
+use App\Models\Reading;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -17,7 +17,7 @@ class AlertaLecturaNotification extends Notification
      */
     public function __construct(
         public string $titulo,
-        public Lectura $lectura
+        public Reading $lectura
     )
     {
         
@@ -38,16 +38,16 @@ class AlertaLecturaNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $this->lectura->loadMissing('sensor.invernadero');
+        $this->lectura->loadMissing('sensor.crop');
 
-        $invernadero = $this->lectura->sensor?->invernadero;
+        $invernadero = $this->lectura->sensor?->crop;
 
         return (new MailMessage)
             ->subject($this->titulo)
             ->greeting('⚠️ Alerta en humedad del suelo - '.$this->titulo)
-            ->line("Invernadero: {$invernadero->nombre}")
-            ->line("Sensor: {$this->lectura->sensor->nombre}")
-            ->line("Valor detectado: {$this->lectura->valor}")
+            ->line("Invernadero: {$invernadero->name}")
+            ->line("Sensor: {$this->lectura->sensor->name}")
+            ->line("Valor detectado: {$this->lectura->value}")
             ->line('Se ha detectado una lectura fuera del rango permitido.')
             ->salutation('Sistema de Monitoreo de Invernaderos');
     }

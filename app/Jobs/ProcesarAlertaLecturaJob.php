@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\Lectura;
+use App\Models\Reading;
 use App\Notifications\AlertaLecturaNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
@@ -17,7 +17,7 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public Lectura $lectura)
+    public function __construct(public Reading $lectura)
     {
         //
     }
@@ -28,15 +28,15 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
     public function handle(): void
     {
         $this->lectura->load([
-            'sensor.invernadero.usuarios'
+            'sensor.crop.users'
         ]);
 
-        $invernadero = $this->lectura->sensor->invernadero;
-        $valMax = $this->lectura->sensor->valor_max;
-        $valMin = $this->lectura->sensor->valor_min;
+        $invernadero = $this->lectura->sensor->crop;
+        $valMax = $this->lectura->sensor->max_value;
+        $valMin = $this->lectura->sensor->min_value;
         
-        if ($this->lectura->valor > $valMax) {
-            foreach ($invernadero->usuarios as $usuario) { 
+        if ($this->lectura->value > $valMax) {
+            foreach ($invernadero->users as $usuario) { 
                $usuario->notify(
                     new AlertaLecturaNotification(
                         'Humedad alta',
@@ -46,8 +46,8 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
             }
         }
 
-        if ($this->lectura->valor < $valMin) {
-            foreach ($invernadero->usuarios as $usuario) { 
+        if ($this->lectura->value < $valMin) {
+            foreach ($invernadero->users as $usuario) { 
                $usuario->notify(
                     new AlertaLecturaNotification(
                         'Humedad Baja',
