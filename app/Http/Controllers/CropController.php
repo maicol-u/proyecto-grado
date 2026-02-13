@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Invernadero;
+use App\Models\Crop;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
-class InvernaderoController extends Controller
+class CropController extends Controller
 {
     /**
      * Listar invernaderos
@@ -17,7 +17,7 @@ class InvernaderoController extends Controller
         $user = $request->user();
 
         if ($user->isAdmin()) {
-            $invernaderos = Invernadero::with('usuarios')->get();
+            $invernaderos = Crop::with('users')->get();
         } else {
             $invernaderos = $user->invernaderos()->get();
         }
@@ -42,10 +42,10 @@ class InvernaderoController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
-        $invernadero = Invernadero::create([
-            'nombre' => $request->nombre,
-            'ubicacion' => $request->ubicacion,
-            'descripcion' => $request->descripcion,
+        $invernadero = Crop::create([
+            'name' => $request->nombre,
+            'location' => $request->ubicacion,
+            'description' => $request->descripcion,
         ]);
 
         return redirect()->route('invernadero.index')->with('success', 'Invernadero creado correctamente');
@@ -54,15 +54,15 @@ class InvernaderoController extends Controller
     /**
      * Mostrar un invernadero específico
      */
-    public function show(Invernadero $invernadero)
+    public function show(Crop $crop)
     {
-        return Inertia::render('invernaderos/Update', ['invernadero' => $invernadero]);
+        return Inertia::render('invernaderos/Update', ['invernadero' => $crop]);
     }
 
     /**
      * Mostrar un invernadero específico para editar
      */
-    public function edit(Invernadero $invernadero)
+    public function edit(Crop $invernadero)
     {
         return Inertia::render('invernaderos/Update', ['invernadero' => $invernadero]);
     }
@@ -70,7 +70,7 @@ class InvernaderoController extends Controller
     /**
      * Actualizar un invernadero
      */
-    public function update(Request $request, Invernadero $invernadero)
+    public function update(Request $request, Crop $invernadero)
     {
         $data = $request->validate([
             'nombre' => 'required|string|max:100',
@@ -78,7 +78,11 @@ class InvernaderoController extends Controller
             'descripcion' => 'nullable|string',
         ]);
 
-        $invernadero->update($data);
+        $invernadero->update([
+            'name' => $data['nombre'],
+            'location' => $data['ubicacion'],
+            'description' => $data['descripcion']
+        ]);
 
         return redirect()->route('invernadero.edit', $invernadero->id)
             ->with('success', 'Invernadero actualizado correctamente', microtime());
@@ -87,10 +91,10 @@ class InvernaderoController extends Controller
     /**
      * Eliminar un invernadero
      */
-    public function destroy(Invernadero $invernadero)
+    public function destroy(Crop $invernadero)
     {
         // Desvincular usuarios
-        $invernadero->usuarios()->detach();
+        $invernadero->users()->detach();
 
         $invernadero->delete();
 
@@ -100,7 +104,7 @@ class InvernaderoController extends Controller
     /**
      * Verifica que el invernadero pertenezca al usuario
      */
-    private function authorizeAccess(Invernadero $invernadero): void
+    private function authorizeAccess(Crop $invernadero): void
     {
         if (!Auth::user()->invernaderos->contains($invernadero->id)) {
             abort(403, 'No tienes acceso a este invernadero');

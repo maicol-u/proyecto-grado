@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-class TipoSensor extends Model
+class SensorType extends Model
 {
-    protected $table = 'tipos_sensor';
 
     protected $fillable = [
-        'nombre',
-        'unidad'
+        'name',
+        'unit',
+        'symbol'
     ];
 
     /**
      * Un tipo de sensor puede tener muchos sensores
      */
-    public function sensores(): HasMany
+    public function sensors(): HasMany
     {
-        return $this->hasMany(Sensor::class, 'id_tipo');
+        return $this->hasMany(Sensor::class, 'type_id');
     }
 }

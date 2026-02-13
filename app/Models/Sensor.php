@@ -2,65 +2,64 @@
 
 namespace App\Models;
 
-use App\Enums\EstadoAlertaSensor;
+use App\Enums\SensorAlertLevel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Sensor extends Model
 {
-    protected $table = 'sensores';
 
     protected $fillable = [
-        'id_invernadero',
-        'id_tipo',
-        'nombre',
-        'modelo',
-        'unidad',
-        'estado',
-        'estado_alerta',
-        'intervalo_lectura',
-        'valor_min',
-        'valor_max',
+        'crop_id',
+        'type_id',
+        'name',
+        'model',
+        'unit',
+        'status',
+        'alert_level',
+        'reading_interval',
+        'min_value',
+        'max_value',
     ];
 
     protected $casts = [
-        'intervalo_lectura' => 'integer',
-        'valor_min' => 'decimal:2',
-        'valor_max' => 'decimal:2',
-        'estado_alerta' => EstadoAlertaSensor::class,
+        'reading_interval' => 'integer',
+        'min_value' => 'decimal:2',
+        'max_value' => 'decimal:2',
+        'alert_level' => SensorAlertLevel::class,
     ];
 
     /**
      * Sensor pertenece a un invernadero
      */
-    public function invernadero(): BelongsTo
+    public function crop(): BelongsTo
     {
         return $this->belongsTo(
-            Invernadero::class,
-            'id_invernadero'
+            Crop::class,
+            'crop_id'
         );
     }
 
     /**
      * Tipo de sensor (humedad, temperatura, etc.)
      */
-    public function tipo(): BelongsTo
+    public function type(): BelongsTo
     {
         return $this->belongsTo(
-            TipoSensor::class,
-            'id_tipo'
+            SensorType::class,
+            'type_id'
         );
     }
 
     /**
      * Lecturas del sensor
      */
-    public function lecturas(): HasMany
+    public function readings(): HasMany
     {
         return $this->hasMany(
-            Lectura::class,
-            'id_sensor'
+            Reading::class,
+            'sensor_id'
         );
     }
 }

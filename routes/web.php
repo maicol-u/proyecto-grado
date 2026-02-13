@@ -1,8 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\InvernaderoController;
-use App\Services\LecturaService;
+use App\Http\Controllers\CropController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
@@ -19,7 +18,7 @@ Route::get('dashboard', function () {
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
-    Route::resource('invernadero', InvernaderoController::class);
+    Route::resource('invernadero', CropController::class);
 });
 
 

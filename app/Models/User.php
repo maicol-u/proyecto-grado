@@ -24,6 +24,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'phone_number',
         'password',
     ];
 
@@ -59,13 +60,13 @@ class User extends Authenticatable
         return $this->role === UserRole::ADMIN;
     }
 
-    public function isCliente()
+    public function isCustomer()
     {
-        return $this->role ===  UserRole::CLIENTE;
+        return $this->role ===  UserRole::CUSTOMER;
     }
 
-    public function invernaderos(): BelongsToMany
+    public function crops(): BelongsToMany
     {
-        return $this->belongsToMany(Invernadero::class, 'usuario_invernaderos', 'id_usuario', 'id_invernadero');
+        return $this->belongsToMany(Crop::class, 'user_crop', 'user_id', 'crop_id');
     }
 }

@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Services\LecturaService;
+use App\Services\ReadingService;
 use Illuminate\Console\Command;
 use PhpMqtt\Client\MqttClient;
 use PhpMqtt\Client\ConnectionSettings;
@@ -21,14 +21,14 @@ class MqttListener extends Command
    *
    * @var string
    */
-  protected $description = 'Command description';
+  protected $description = 'Client mqtt';
 
   /**
    * Execute the console command.
    */
   public function handle()
   {
-    $service = app(LecturaService::class);
+    $service = app(ReadingService::class);
     $server   = env('MQTT_HOST');
     $port     = env('MQTT_PORT', 1883);
     $clientId = 'laravel_mqtt_' . uniqid();
@@ -44,7 +44,7 @@ class MqttListener extends Command
 
     $this->info('Conectado a MQTT');
 
-    $mqtt->subscribe('invernadero/sensor/humedad/+/', function ($topic, $message) use ($service) {
+    $mqtt->subscribe('crop/sensor/humidity/+/', function ($topic, $message) use ($service) {
 
       $this->info("Datos recibidos: " . $message . ' Topic: ' . $topic);
       $data = json_decode($message, true);
@@ -54,7 +54,7 @@ class MqttListener extends Command
         return;
       }
 
-      $service->procesarLectura($data);
+      $service->store($data);
 
       $this->info("Datos guardados");
     }, 1);

@@ -17,9 +17,9 @@ const props = defineProps({
 })
 
 const form = useForm({
-    nombre: props.invernadero.nombre,
-    ubicacion: props.invernadero.ubicacion,
-    descripcion: props.invernadero.descripcion,
+    nombre: props.invernadero.name,
+    ubicacion: props.invernadero.location,
+    descripcion: props.invernadero.description,
 })
 
 function submit() {

@@ -11,16 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lecturas', function (Blueprint $table) {
+        Schema::create('readings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('id_sensor');
-            $table->decimal('valor', 10, 2);
-            $table->dateTime('fecha')->useCurrent();
+            $table->unsignedBigInteger('sensor_id');
+            $table->decimal('value', 10, 2);
+            $table->dateTime('recorded_at')->useCurrent();
 
-            $table->foreign('id_sensor')
+            $table->foreign('sensor_id')
                 ->references('id')
-                ->on('sensores')
-                ->onDelete('cascade');
+                ->on('sensors')
+                ->onDelete('restrict');
         });
     }
 
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('lecturas');
+        Schema::dropIfExists('readings');
     }
 };

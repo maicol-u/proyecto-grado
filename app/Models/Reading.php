@@ -5,19 +5,19 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-class Lectura extends Model
+class Reading extends Model
 {
     public $timestamps = false;
 
     protected $fillable = [
-        'id_sensor',
-        'valor',
-        'fecha',
+        'sensor_id',
+        'value',
+        'recorded_at',
     ];
 
     protected $casts = [
-        'valor' => 'decimal:2',
-        'fecha' => 'datetime',
+        'value' => 'decimal:2',
+        'recorded_at' => 'datetime',
     ];
 
     /**
@@ -27,7 +27,7 @@ class Lectura extends Model
     {
         return $this->belongsTo(
             Sensor::class,
-            'id_sensor'
+            'sensor_id'
         );
     }
 }

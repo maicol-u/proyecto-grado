@@ -39,15 +39,15 @@ defineProps({
           <div class="border rounded-lg p-4 shadow cursor-pointer hover:border-sky-600">
 
             <h2 class="text-lg font-semibold">
-              {{ inv.nombre }}
+              {{ inv.name }}
             </h2>
 
             <p class="text-sm text-gray-600">
-              Ubicación: {{ inv.ubicacion }}
+              Ubicación: {{ inv.location }}
             </p>
 
             <p class="text-sm">
-              Usuarios vinculados: {{ inv.usuarios.length }}
+              Usuarios vinculados: {{ inv.users.length }}
             </p>
 
           </div>

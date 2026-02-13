@@ -11,10 +11,12 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tipos_sensor', function (Blueprint $table) {
+        Schema::create('crops', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre', 50)->unique();
-            $table->string('unidad', 20)->nullable();
+            $table->string('name', 100);
+            $table->string('location')->nullable();
+            $table->text('description')->nullable();
+            $table->boolean('is_active')->default(1);
             $table->timestamps();
         });
     }
@@ -24,6 +26,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('tipos_sensor');
+        Schema::dropIfExists('crops');
     }
 };

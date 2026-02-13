@@ -2,7 +2,7 @@
 
 namespace App\Events;
 
-use App\Models\Lectura;
+use App\Models\Reading;
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PresenceChannel;
@@ -11,14 +11,14 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class LecturaCreada
+class ReadingCreated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Public Lectura $lectura)
+    public function __construct(Public Reading $lectura)
     {
         //
     }
