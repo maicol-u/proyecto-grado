@@ -15,8 +15,8 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
         $this->call(AdminUserSeeder::class);
-        $this->call(sensorTypeSeeder::class);
-        $this->call(sensorSeeder::class);
+        $this->call(SensorTypeSeeder::class);
+        $this->call(SensorSeeder::class);
         $this->call(CustumerUserSeeder::class);
     }
 }
