@@ -9,11 +9,16 @@ import { usePage } from '@inertiajs/vue3'
 import Alert from '@/components/Alert.vue'
 import Swal from 'sweetalert2'
 import { router } from '@inertiajs/vue3'
+import Separator from '@/components/ui/separator/Separator.vue';
+import { ref } from 'vue'
+import UserAutocomplete from '@/components/UserAutocomplete.vue';
+
 
 const page = usePage()
 
 const props = defineProps({
-    invernadero: Object
+    invernadero: Object,
+    users: Array
 })
 
 const form = useForm({
@@ -43,6 +48,27 @@ function confirmDelete() {
         }
     })
 }
+
+const selectedUser = ref("")
+
+const attachUser = (user) => {
+    router.post(`/invernadero/${props.invernadero.id}/vincular`, {
+        user_id: user.id
+    }, {
+        preserveScroll: true
+    })
+
+}
+
+const distachUser = (userId) => {
+    router.delete(
+        `/invernaderos/${props.invernadero.id}/users/${userId}`,
+        {
+            preserveScroll: true
+        }
+    )
+}
+
 </script>
 
 <template>
@@ -91,6 +117,43 @@ function confirmDelete() {
                 </div>
 
             </form>
+
+            <!-- Usuarios vinculados -->
+            <div class="shadow-md p-2 border rounded-lg mt-6">
+                <h2 class="text-lg font-semibold my-1 mt-2 text-gray-800">
+                    Vincular usuario:
+                </h2>
+
+                <div class="mb-4">
+                    <UserAutocomplete @selected="attachUser"> </UserAutocomplete>
+                </div>
+
+
+                <h2 class="text-lg font-semibold my-1 mt-2 text-gray-800">
+                    Lista de usuarios vinculados
+                </h2>
+                <div v-if="invernadero.users.length" class="space-y-3">
+                    <div v-for="user in invernadero.users" :key="user.id"
+                        class="flex justify-between items-center p-3 border rounded-md bg-gray-50">
+                        <div>
+                            <p class="font-medium">
+                                {{ user.name }}
+                            </p>
+                            <p class="text-sm text-gray-600">
+                                {{ user.email }}
+                            </p>
+                        </div>
+
+                        <button @click="distachUser(user.id)" class="text-red-600 hover:text-red-800 text-sm cursor-pointer">
+                            Desvincular
+                        </button>
+                    </div>
+                </div>
+                <p v-else class="text-sm text-gray-500">
+                    No hay usuarios vinculados.
+                </p>
+            </div>
+
 
             <div class="mt-10">
                 <Button type="button" variant="destructive" @click="confirmDelete">

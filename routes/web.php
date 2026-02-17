@@ -20,7 +20,10 @@ Route::get('dashboard', function () {
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
     Route::resource('invernadero', CropController::class);
-     Route::resource('users', UserController::class);
+    Route::resource('users', UserController::class);
+    Route::get('/user/search', [UserController::class, 'search'])->name('user.search');
+    Route::post('/invernadero/{invernadero}/vincular', [CropController::class, 'attachUser']);
+    Route::delete('/invernaderos/{invernadero}/users/{user}', [CropController::class, 'detachUser']);
 });
 
 

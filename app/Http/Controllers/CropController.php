@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Crop;
+use App\Models\User;
 use Illuminate\Container\Attributes\Auth;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -64,7 +65,10 @@ class CropController extends Controller
      */
     public function edit(Crop $invernadero)
     {
-        return Inertia::render('invernaderos/Update', ['invernadero' => $invernadero]);
+        return Inertia::render('invernaderos/Update', [
+            'invernadero' => $invernadero->load('users'),
+            'users' => User::select('id','name')->get()
+        ]);
     }
 
     /**
@@ -110,4 +114,23 @@ class CropController extends Controller
             abort(403, 'No tienes acceso a este invernadero');
         }
     }
+
+    public function attachUser(Request $request, Crop $invernadero)
+    {
+        $request->validate([
+            'user_id' => 'required|exists:users,id',
+        ]);
+
+        $invernadero->users()->syncWithoutDetaching($request->user_id);
+
+        return back()->with('success', 'Usuario vinculado.');
+    }
+
+    public function detachUser(Crop $invernadero, User $user)
+    {
+        $invernadero->users()->detach($user->id);
+
+        return back()->with('success', 'Usuario desvinculado.');
+    }
+
 }
