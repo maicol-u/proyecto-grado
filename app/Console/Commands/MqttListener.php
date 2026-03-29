@@ -44,7 +44,7 @@ class MqttListener extends Command
 
     $this->info('Conectado a MQTT');
 
-    $mqtt->subscribe('crop/sensor/humidity/+/', function ($topic, $message) use ($service) {
+    $mqtt->subscribe('crop/sensor/humidity/', function ($topic, $message) use ($service) {
 
       $this->info("Datos recibidos: " . $message . ' Topic: ' . $topic);
       $data = json_decode($message, true);

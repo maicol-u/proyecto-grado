@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\SensorAlertLevel;
+use App\Models\Alert;
 use App\Models\Reading;
 use App\Notifications\AlertaLecturaNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,30 +33,41 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
             'sensor.crop.users'
         ]);
 
-        $invernadero = $this->lectura->sensor->crop;
-        $valMax = $this->lectura->sensor->max_value;
-        $valMin = $this->lectura->sensor->min_value;
+        $sensor = $this->lectura->sensor;
+        $invernadero = $sensor->crop;
+
+        $valMax = $sensor->max_value;
+        $valMin = $sensor->min_value;
+
+        $title = null;
+        $type = null;
         
         if ($this->lectura->value > $valMax) {
-            foreach ($invernadero->users as $usuario) { 
-               $usuario->notify(
-                    new AlertaLecturaNotification(
-                        'Humedad alta',
-                        $this->lectura
-                    )
-                );
-            }
+            $title = 'Humedad alta';
+            $type = SensorAlertLevel::HIGH;
         }
 
         if ($this->lectura->value < $valMin) {
-            foreach ($invernadero->users as $usuario) { 
-               $usuario->notify(
-                    new AlertaLecturaNotification(
-                        'Humedad Baja',
-                        $this->lectura
-                    )
-                );
-            }
+           $title = 'Humedad baja';
+           $type = SensorAlertLevel::LOW;
         }
+
+        $alert = Alert::create([
+            'sensor_id' => $sensor->id,
+            'value' => $this->lectura->value,
+            'type' => $type,
+            'message' => $title,
+            'triggered_at' => now(),
+        ]);
+
+        foreach ($invernadero->users as $usuario) { 
+            $usuario->notify(
+                new AlertaLecturaNotification(
+                    $title,
+                    $this->lectura
+                )
+            );
+        }
+
     }
 }
