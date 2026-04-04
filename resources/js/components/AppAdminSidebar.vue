@@ -28,9 +28,14 @@ const mainNavItems: NavItem[] = [
         href: '/invernadero',
         icon: Folder,
     },
-     {
+    {
         title: 'Usuarios',
         href: '/users',
+        icon: Folder,
+    },
+    {
+        title: 'Sensores',
+        href: '/sensors',
         icon: Folder,
     },
 ];

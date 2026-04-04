@@ -42,14 +42,14 @@ function submit() {
                 </div>
 
                 <div class="grid gap-1 mt-5">
-                    <Label for="email">Email</Label>
+                    <Label for="email">Email Notificaciones</Label>
                     <Input id="email" class="mt-1 block w-full" name="email" v-model="form.email"
                         placeholder="usuario@correo.com" />
                     <InputError class="mt-1 ms-1" :message="form.errors.email" />
                 </div>
 
                 <div class="grid gap-1 mt-5">
-                    <Label for="celular">Número Celular</Label>
+                    <Label for="celular">Número Celular Notificaciones</Label>
                     <Input id="celular" class="mt-1 block w-full" name="celular" v-model="form.celular"
                         placeholder="3050000000" />
                     <InputError class="mt-1 ms-1" :message="form.errors.celular" />

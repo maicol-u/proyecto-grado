@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\CropController;
+use App\Http\Controllers\SensorController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -24,6 +25,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/user/search', [UserController::class, 'search'])->name('user.search');
     Route::post('/invernadero/{invernadero}/vincular', [CropController::class, 'attachUser']);
     Route::delete('/invernaderos/{invernadero}/users/{user}', [CropController::class, 'detachUser']);
+    Route::resource('sensors', SensorController::class);
 });
 
 

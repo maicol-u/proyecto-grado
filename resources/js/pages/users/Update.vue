@@ -77,14 +77,14 @@ function confirmDelete() {
 
                 <!-- Ubicación -->
                 <div class="grid gap-1">
-                    <Label for="email">Email</Label>
+                    <Label for="email">Email Notificaciones</Label>
                     <Input id="email" v-model="form.email" class="mt-1 block w-full" placeholder="usuario@correo.com" />
                     <InputError class="mt-1 ms-1" :message="form.errors.email" />
                 </div>
 
                 <!-- Descripción -->
                 <div class="grid gap-1">
-                    <Label for="celular">No. Celular</Label>
+                    <Label for="celular">No. Celular Notificaciones</Label>
 
                      <Input id="celular" v-model="form.celular" class="mt-1 block w-full" placeholder="3050000000" />
                     <InputError class="mt-1 ms-1" :message="form.errors.celular" />
