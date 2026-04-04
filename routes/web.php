@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\SensorController;
+use App\Http\Controllers\SensorReadingController;
 use App\Http\Controllers\UserController;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -28,6 +29,9 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::resource('sensors', SensorController::class);
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/sensors/{id}/chart', [SensorReadingController::class, 'chart']);
+});
 
 
 

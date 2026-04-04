@@ -73,7 +73,16 @@ class SensorController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $sensor = Sensor::with(['crop', 'type'])->findOrFail($id);
+
+        $readings = $sensor->readings()
+            ->latest('recorded_at')
+            ->paginate(10);
+
+        return Inertia::render('sensors/Show', [
+            'sensor' => $sensor,
+            'readings' => $readings,
+        ]);
     }
 
     /**

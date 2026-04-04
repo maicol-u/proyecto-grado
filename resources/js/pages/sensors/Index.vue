@@ -96,6 +96,11 @@ function confirmDelete(id) {
 
                             <td class="px-4 py-1 text-center space-x-2">
 
+                                <!-- Detalles -->
+                                <Link :href="`/sensors/${sensor.id}`" class="text-blue-600 hover:underline">
+                                    Detalles
+                                </Link>
+
                                 <!-- Editar -->
                                 <Link :href="`/sensors/${sensor.id}/edit`" class="text-blue-600 hover:underline">
                                     Editar
