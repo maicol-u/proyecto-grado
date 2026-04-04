@@ -5,8 +5,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import InputError from '@/components/InputError.vue'
 import { Button } from '@/components/ui/button'
-import Multiselect from 'vue-multiselect'
-import 'vue-multiselect/dist/vue-multiselect.css'
 import { watch, ref } from 'vue'
 import SearchSelect from '@/components/SearchSelect.vue'
 
