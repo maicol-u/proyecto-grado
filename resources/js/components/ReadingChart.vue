@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed } from 'vue'
+import { ref, onMounted, computed, onUnmounted } from 'vue'
 import axios from 'axios'
 import { Line } from 'vue-chartjs'
 import {
@@ -30,11 +30,15 @@ const props = defineProps({
 
 const readings = ref([])
 const loading = ref(true)
+let idInterval = null;
+const range = ref('live')
 
-// 🔥 Cargar datos desde endpoint
+// Cargar datos desde endpoint
 async function loadData() {
     try {
-        const res = await axios.get(`/sensors/${props.sensorId}/chart`)
+        const res = await axios.get(`/sensors/${props.sensorId}/chart`, {
+            params: { range: range.value }
+        })
         readings.value = res.data
     } catch (error) {
         console.error('Error cargando lecturas', error)
@@ -47,7 +51,7 @@ onMounted(loadData)
 
 //  Data del gráfico
 const chartData = computed(() => ({
-    labels: readings.value.map(r => formatDate(r.recorded_at)),
+    labels: readings.value.map(r => formatDate(r.time)),
     datasets: [
         {
             label: 'Lecturas',
@@ -87,12 +91,35 @@ function formatDate(date) {
 
 onMounted(() => {
     loadData()
-    setInterval(loadData, 6000) // cada 6s
+    idInterval = setInterval(loadData, 5000) // cada 6s
+})
+
+onUnmounted(() => {
+    clearInterval(idInterval)
 })
 </script>
 
 <template>
     <div class="bg-white p-4 rounded-lg shadow border">
+
+        <div class="flex justify-between items-center mb-4">
+
+            <h2 class="font-semibold text-gray-700">
+                Lecturas del sensor
+            </h2>
+
+            <!-- Selector -->
+            <select v-model="range" @change="loadData" class="text-sm border border-gray-300 rounded-md px-2 py-1 
+                       focus:outline-none focus:ring-2 focus:ring-green-500">
+                <option value="live">Últimos 5 minutos</option>
+                <option value="1h">Última hora</option>
+                <option value="10h">Últimas 10 horas</option>
+                <option value="1d">Último día</option>
+                <option value="1m">Último mes</option>
+            </select>
+
+        </div>
+
 
         <!-- Loading -->
         <div v-if="loading" class="text-center text-gray-500 py-6">
@@ -105,10 +132,6 @@ onMounted(() => {
         </div>
 
         <!-- Gráfico -->
-        <Line
-            v-else
-            :data="chartData"
-            :options="chartOptions"
-        />
+        <Line v-else :data="chartData" :options="chartOptions" />
     </div>
 </template>
