@@ -19,7 +19,7 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(public Reading $lectura)
+    public function __construct(public Reading $reading)
     {
         //
     }
@@ -29,12 +29,12 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
      */
     public function handle(): void
     {
-        $this->lectura->load([
+        $this->reading->load([
             'sensor.crop.users'
         ]);
 
-        $sensor = $this->lectura->sensor;
-        $invernadero = $sensor->crop;
+        $sensor = $this->reading->sensor;
+        $crop = $sensor->crop;
 
         $valMax = $sensor->max_value;
         $valMin = $sensor->min_value;
@@ -42,29 +42,29 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
         $title = null;
         $type = null;
         
-        if ($this->lectura->value > $valMax) {
+        if ($this->reading->value > $valMax) {
             $title = 'Humedad alta';
             $type = SensorAlertLevel::HIGH;
         }
 
-        if ($this->lectura->value < $valMin) {
+        if ($this->reading->value < $valMin) {
            $title = 'Humedad baja';
            $type = SensorAlertLevel::LOW;
         }
 
-        $alert = Alert::create([
+        Alert::create([
             'sensor_id' => $sensor->id,
-            'value' => $this->lectura->value,
+            'value' => $this->reading->value,
             'type' => $type,
             'message' => $title,
             'triggered_at' => now(),
         ]);
 
-        foreach ($invernadero->users as $usuario) { 
+        foreach ($crop->users as $usuario) { 
             $usuario->notify(
                 new AlertaLecturaNotification(
                     $title,
-                    $this->lectura
+                    $this->reading
                 )
             );
         }
