@@ -16,8 +16,8 @@ class AlertaLecturaNotification extends Notification
      * Create a new notification instance.
      */
     public function __construct(
-        public string $titulo,
-        public Reading $lectura
+        public string $title,
+        public Reading $reading
     )
     {
         
@@ -38,16 +38,18 @@ class AlertaLecturaNotification extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $this->lectura->loadMissing('sensor.crop');
+        $this->reading->loadMissing('sensor.crop');
 
-        $invernadero = $this->lectura->sensor?->crop;
+        $crop = $this->reading->sensor?->crop;
+        $formattedRecordedAt = $this->reading->recorded_at?->format('d/m/Y H:i:s') ?? 'No disponible';
 
         return (new MailMessage)
-            ->subject($this->titulo)
-            ->greeting('⚠️ Alerta en humedad del suelo - '.$this->titulo)
-            ->line("Invernadero: {$invernadero->name}")
-            ->line("Sensor: {$this->lectura->sensor->name}")
-            ->line("Valor detectado: {$this->lectura->value}")
+            ->subject($this->title)
+            ->greeting('⚠️ Alerta en humedad del suelo - '.$this->title)
+            ->line("Invernadero: {$crop->name}")
+            ->line("Sensor: {$this->reading->sensor->name}")
+            ->line("Valor detectado: {$this->reading->value}")
+            ->line("Fecha y hora de la lectura: {$formattedRecordedAt}")
             ->line('Se ha detectado una lectura fuera del rango permitido.')
             ->salutation('Sistema de Monitoreo de Invernaderos');
     }
