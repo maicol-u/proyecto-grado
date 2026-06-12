@@ -74,9 +74,14 @@ const chartOptions = computed(() => ({
     },
     scales: {
         y: {
+            min: 0,
+            max: 100,
             title: {
                 display: true,
                 text: props.unit
+            },
+            ticks: {
+                callback: (value) => `${value}%`
             }
         }
     }
@@ -91,7 +96,7 @@ function formatDate(date) {
 
 onMounted(() => {
     loadData()
-    idInterval = setInterval(loadData, 5000) // cada 6s
+    idInterval = setInterval(loadData, 5000)
 })
 
 onUnmounted(() => {
