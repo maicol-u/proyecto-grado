@@ -23,10 +23,6 @@ const props = defineProps({
         type: Number,
         default: 5
     },
-    refreshInterval: {
-        type: Number,
-        default: 5000
-    },
     title: {
         type: String,
         default: 'Indicador de humedad'
@@ -36,7 +32,42 @@ const props = defineProps({
 const readings = ref([])
 const loading = ref(true)
 const fetchError = ref(false)
-let intervalId = null
+
+function applyIncomingReading(reading) {
+    const parsedValue = Number.parseFloat(reading?.value)
+
+    if (!Number.isFinite(parsedValue)) {
+        return
+    }
+
+    const nextReading = {
+        reading_id: reading.reading_id ?? null,
+        time: reading.time ?? new Date().toISOString(),
+        value: parsedValue,
+    }
+
+    const lastReading = readings.value.at(-1)
+
+    if (lastReading?.reading_id && nextReading.reading_id && lastReading.reading_id === nextReading.reading_id) {
+        return
+    }
+
+    readings.value = [...readings.value, nextReading].slice(-70)
+    loading.value = false
+    fetchError.value = false
+}
+
+function subscribeToSensorChannel() {
+    if (!window.Echo) {
+        console.warn('Echo no esta disponible. El indicador no recibira actualizaciones en tiempo real.')
+        return
+    }
+
+    window.Echo.private(`sensor.${props.sensorId}`)
+        .listen('.reading.created', (event) => {
+            applyIncomingReading(event)
+        })
+}
 
 async function loadData() {
     try {
@@ -111,11 +142,11 @@ const lastUpdated = computed(() => {
 
 onMounted(() => {
     loadData()
-    intervalId = setInterval(loadData, props.refreshInterval)
+    subscribeToSensorChannel()
 })
 
 onUnmounted(() => {
-    clearInterval(intervalId)
+    window.Echo?.leave(`sensor.${props.sensorId}`)
 })
 </script>
 
@@ -235,14 +266,14 @@ onUnmounted(() => {
 
 .wave-back {
     background: rgba(255, 255, 255, 0.28);
-    animation: drift 8s linear infinite;
+    animation: drift 3s linear infinite;
 }
 
 .wave-front {
     top: -8px;
     background: rgba(255, 255, 255, 0.8);
     opacity: 0.7;
-    animation: driftReverse 6s linear infinite;
+    animation: driftReverse 3s linear infinite;
 }
 
 .gauge-gloss {

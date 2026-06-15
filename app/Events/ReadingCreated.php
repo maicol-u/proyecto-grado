@@ -3,35 +3,42 @@
 namespace App\Events;
 
 use App\Models\Reading;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use Illuminate\Contracts\Broadcasting\ShouldBroadcastNow;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class ReadingCreated
+class ReadingCreated implements ShouldBroadcastNow
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct(Public Reading $lectura)
+    public function __construct(public Reading $lectura)
     {
-        //
     }
 
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return array<int, \Illuminate\Broadcasting\Channel>
-     */
     public function broadcastOn(): array
     {
         return [
-            new PrivateChannel('channel-name'),
+            new PrivateChannel('sensor.'.$this->lectura->sensor_id),
+        ];
+    }
+
+    public function broadcastAs(): string
+    {
+        return 'reading.created';
+    }
+
+    public function broadcastWith(): array
+    {
+        return [
+            'reading_id' => $this->lectura->id,
+            'sensor_id' => $this->lectura->sensor_id,
+            'value' => (float) $this->lectura->value,
+            'time' => optional($this->lectura->recorded_at)->toISOString(),
         ];
     }
 }
