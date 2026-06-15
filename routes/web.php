@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\AlertController;
 use App\Http\Controllers\CropController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorReadingController;
@@ -27,6 +28,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/invernadero/{invernadero}/vincular', [CropController::class, 'attachUser']);
     Route::delete('/invernaderos/{invernadero}/users/{user}', [CropController::class, 'detachUser']);
     Route::resource('sensors', SensorController::class);
+    Route::resource('alerts', AlertController::class)->only(['index', 'show', 'destroy']);
 });
 
 Route::middleware(['auth'])->group(function () {

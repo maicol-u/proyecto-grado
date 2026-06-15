@@ -23,13 +23,13 @@ class CropController extends Controller
             $invernaderos = $user->invernaderos()->get();
         }
 
-        return Inertia::render('invernaderos/Index', [
+        return Inertia::render('crops/Index', [
             'invernaderos' => $invernaderos
         ]);
     }
 
     public function create(){
-        return Inertia::render('invernaderos/Create');
+        return Inertia::render('crops/Create');
     }
 
     /**
@@ -57,7 +57,7 @@ class CropController extends Controller
      */
     public function show(Crop $crop)
     {
-        return Inertia::render('invernaderos/Update', ['invernadero' => $crop]);
+        return Inertia::render('crops/Update', ['invernadero' => $crop]);
     }
 
     /**
@@ -65,7 +65,7 @@ class CropController extends Controller
      */
     public function edit(Crop $invernadero)
     {
-        return Inertia::render('invernaderos/Update', [
+        return Inertia::render('crops/Update', [
             'invernadero' => $invernadero->load('users'),
             'users' => User::select('id','name')->get()
         ]);

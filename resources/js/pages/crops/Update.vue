@@ -9,7 +9,6 @@ import { usePage } from '@inertiajs/vue3'
 import Alert from '@/components/Alert.vue'
 import Swal from 'sweetalert2'
 import { router } from '@inertiajs/vue3'
-import Separator from '@/components/ui/separator/Separator.vue';
 import { ref } from 'vue'
 import UserAutocomplete from '@/components/UserAutocomplete.vue';
 
