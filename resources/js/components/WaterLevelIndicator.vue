@@ -21,7 +21,7 @@ const props = defineProps({
     },
     averageCount: {
         type: Number,
-        default: 5
+        default: 1
     },
     title: {
         type: String,

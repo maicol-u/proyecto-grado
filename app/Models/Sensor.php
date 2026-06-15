@@ -62,4 +62,16 @@ class Sensor extends Model
             'sensor_id'
         );
     }
+
+    public function checkSensorStatus()
+    {
+        $latestReading = $this->readings()->latest('recorded_at')->first();
+        $intervalSeconds = $this->reading_interval;
+
+        if (!$latestReading) {
+            return 'offline';
+        }
+
+        return $latestReading->recorded_at >= now()->subSeconds($intervalSeconds)? 'online': 'offline';
+    }
 }

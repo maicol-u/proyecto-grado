@@ -1,12 +1,50 @@
 <script setup>
+import { onMounted, onUnmounted, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { Link } from '@inertiajs/vue3'
 import ReadingChart from '@/components/ReadingChart.vue'
 import WaterLevelIndicator from '@/components/WaterLevelIndicator.vue'
 
-defineProps({
+const props = defineProps({
     sensor: Object,
     readings: Object, // paginado
+})
+
+const currentAlertLevel = ref(props.sensor?.alert_level)
+
+function subscribeToAlertLevel() {
+    if (!window.Echo) {
+        console.warn('Echo no esta disponible. El nivel de alerta no se actualizara en tiempo real.')
+        return
+    }
+
+    window.Echo.private(`sensor.${props.sensor.id}`)
+        .listen('.sensor.alert-level-updated', (event) => {
+            currentAlertLevel.value = event.alert_level
+        })
+}
+
+function alertLevelClass(level) {
+    if (level === 'high') return 'bg-red-500'
+    if (level === 'low') return 'bg-yellow-500'
+    if (level === 'normal') return 'bg-green-500'
+    return 'bg-gray-400'
+}
+
+function alertLevelLabel(level) {
+    if (level === 'high') return 'HUMEDAD ALTA'
+    if (level === 'low') return 'HUMEDAD BAJA'
+    return 'NORMAL'
+}
+
+onMounted(() => {
+    subscribeToAlertLevel()
+})
+
+onUnmounted(() => {
+    if (window.Echo) {
+        window.Echo.leave(`sensor.${props.sensor.id}`)
+    }
 })
 
 function timeAgo(date) {
@@ -112,12 +150,8 @@ function timeAgo(date) {
 
                     <div>
                         <p class="text-sm text-gray-500">Nivel de alerta</p>
-                        <span class="px-2 py-1 rounded text-white text-xs" :class="{
-                            'bg-red-500': sensor.alert_level_label === 'ALERTA',
-                            'bg-yellow-500': sensor.alert_level_label === 'PRECAUCION',
-                            'bg-green-500': sensor.alert_level_label === 'NORMAL'
-                        }">
-                            {{ sensor.alert_level_label }}
+                        <span class="px-2 py-1 rounded text-white text-xs" :class="alertLevelClass(currentAlertLevel)">
+                            {{ alertLevelLabel(currentAlertLevel) }}
                         </span>
                     </div>
                 </div>
@@ -129,7 +163,7 @@ function timeAgo(date) {
 
                 <!-- Indicador de nivel de agua -->
                 <div>
-                    <WaterLevelIndicator :sensor-id="sensor.id" :unit="sensor.unit || '%'" aggregation-mode="average"
+                    <WaterLevelIndicator :sensor-id="sensor.id" :unit="sensor.unit || '%'" aggregation-mode="latest"
                         :average-count="5" />
                 </div>
 
