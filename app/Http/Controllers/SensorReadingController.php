@@ -27,7 +27,7 @@ class SensorReadingController extends Controller
                     ->where('value', '<=', 100)
                     ->where('recorded_at', '>=', $from)
                     ->orderByDesc('recorded_at')
-                    ->limit(70)
+                    ->limit(50)
                     ->get()
                     ->reverse()
                     ->values();

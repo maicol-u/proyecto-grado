@@ -35,14 +35,9 @@ withDefaults(
             <main
                 class="w-full max-w-[335px] overflow-hidden rounded-[2rem] border border-white/70 bg-white/85 shadow-[0_30px_80px_rgba(27,27,24,0.12)] backdrop-blur lg:max-w-4xl xl:max-w-5xl dark:border-white/10 dark:bg-white/5 dark:shadow-[0_30px_80px_rgba(0,0,0,0.35)]">
                 <section class="relative flex flex-col gap-6 px-7 py-10 sm:px-10 lg:px-12 lg:py-14">
-                    <div
-                        class="inline-flex w-fit items-center gap-2 rounded-full border border-[#206a5d]/15 bg-[#206a5d]/8 px-3 py-1 text-xs font-semibold uppercase tracking-[0.24em] text-[#206a5d] dark:border-[#8dd3bb]/20 dark:bg-[#8dd3bb]/10 dark:text-[#8dd3bb]">
-                        Telemetria aplicada al agro
-                    </div>
+                   
                     <div class="space-y-4">
-                        <p class="text-sm font-medium uppercase tracking-[0.28em] text-[#8b6b2e] dark:text-[#d7bc75]">
-                            Bienvenido a nuestra plataforma
-                        </p>
+                        
                         <h1
                             class="max-w-2xl text-2xl font-semibold leading-tight text-[#14211d] sm:text-2xl lg:text-4xl dark:text-[#f4f0e8]">
                             Sistema de monitorizacion remota de la humedad del suelo

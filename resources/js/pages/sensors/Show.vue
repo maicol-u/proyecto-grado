@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 import { Link } from '@inertiajs/vue3'
 import ReadingChart from '@/components/ReadingChart.vue'
@@ -11,16 +11,46 @@ const props = defineProps({
 })
 
 const currentAlertLevel = ref(props.sensor?.alert_level)
+const lastSignalAt = ref(props.readings?.data?.[0]?.recorded_at ? new Date(props.readings.data[0].recorded_at) : null)
+const now = ref(Date.now())
+let clockInterval = null
 
-function subscribeToAlertLevel() {
+function offlineThresholdMs() {
+    return Math.max((Number(props.sensor?.reading_interval) || 1) * 2000, 15000)
+}
+
+function connectivityClass(status) {
+    if (status === 'online') return 'bg-green-500'
+    return 'bg-gray-400'
+}
+
+function connectivityLabel(status) {
+    if (status === 'online') return 'ONLINE'
+    return 'SIN CONEXIÓN'
+}
+
+const connectivityStatus = computed(() => {
+    if (!lastSignalAt.value) {
+        return 'inactive'
+    }
+
+    return now.value - lastSignalAt.value.getTime() <= offlineThresholdMs()
+        ? 'online'
+        : 'inactive'
+})
+
+function subscribeToSensorChannel() {
     if (!window.Echo) {
-        console.warn('Echo no esta disponible. El nivel de alerta no se actualizara en tiempo real.')
+        console.warn('Echo no esta disponible. El sensor no recibira actualizaciones en tiempo real.')
         return
     }
 
     window.Echo.private(`sensor.${props.sensor.id}`)
         .listen('.sensor.alert-level-updated', (event) => {
             currentAlertLevel.value = event.alert_level
+        })
+        .listen('.reading.created', () => {
+            lastSignalAt.value = new Date()
         })
 }
 
@@ -38,10 +68,18 @@ function alertLevelLabel(level) {
 }
 
 onMounted(() => {
-    subscribeToAlertLevel()
+    clockInterval = setInterval(() => {
+        now.value = Date.now()
+    }, 1000)
+
+    subscribeToSensorChannel()
 })
 
 onUnmounted(() => {
+    if (clockInterval) {
+        clearInterval(clockInterval)
+    }
+
     if (window.Echo) {
         window.Echo.leave(`sensor.${props.sensor.id}`)
     }
@@ -52,13 +90,8 @@ function timeAgo(date) {
     const past = new Date(date)
     const diff = Math.floor((now - past) / 1000)
 
-    // < 1 min
     if (diff < 60) return `hace ${diff} seg`
-
-    // < 1 hora
     if (diff < 3600) return `hace ${Math.floor(diff / 60)} min`
-
-    // < 1 día → Hoy a las HH:mm
     if (diff < 86400) {
         return `Hoy a las ${past.toLocaleTimeString('es-CO', {
             hour: '2-digit',
@@ -66,7 +99,6 @@ function timeAgo(date) {
         })}`
     }
 
-    // > 1 día → fecha completa
     return past.toLocaleString('es-CO', {
         day: '2-digit',
         month: '2-digit',
@@ -106,6 +138,13 @@ function timeAgo(date) {
                         <p class="text-sm text-gray-500">Unidad</p>
                         <p class="font-medium">{{ sensor.unit || '-' }}</p>
                     </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500">Conectividad</p>
+                        <span class="px-2 py-1 rounded text-white text-xs" :class="connectivityClass(connectivityStatus)">
+                            {{ connectivityLabel(connectivityStatus) }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Columna 2 -->
@@ -124,6 +163,13 @@ function timeAgo(date) {
                         <p class="text-sm text-gray-500">Intervalo (seg)</p>
                         <p class="font-medium">{{ sensor.reading_interval }}</p>
                     </div>
+
+                    <div>
+                        <p class="text-sm text-gray-500">Nivel de alerta</p>
+                        <span class="px-2 py-1 rounded text-white text-xs" :class="alertLevelClass(currentAlertLevel)">
+                            {{ alertLevelLabel(currentAlertLevel) }}
+                        </span>
+                    </div>
                 </div>
 
                 <!-- Columna 3 -->
@@ -140,20 +186,10 @@ function timeAgo(date) {
 
                     <div>
                         <p class="text-sm text-gray-500">Estado</p>
-                        <span class="px-2 py-1 rounded text-white text-xs" :class="{
-                            'bg-green-500': sensor.status === 'active',
-                            'bg-gray-400': sensor.status !== 'active'
-                        }">
-                            {{ sensor.status }}
-                        </span>
-                    </div>
-
-                    <div>
-                        <p class="text-sm text-gray-500">Nivel de alerta</p>
-                        <span class="px-2 py-1 rounded text-white text-xs" :class="alertLevelClass(currentAlertLevel)">
-                            {{ alertLevelLabel(currentAlertLevel) }}
-                        </span>
-                    </div>
+                        <p class="font-medium">
+                            {{ sensor.status == 'active' ? 'Activo' : 'Inactivo' }}
+                        </p>
+                    </div>                   
                 </div>
 
             </div>
@@ -164,7 +200,7 @@ function timeAgo(date) {
                 <!-- Indicador de nivel de agua -->
                 <div>
                     <WaterLevelIndicator :sensor-id="sensor.id" :unit="sensor.unit || '%'" aggregation-mode="latest"
-                        :average-count="5" />
+                        :average-count="2" />
                 </div>
 
                 <!-- Gráfico -->

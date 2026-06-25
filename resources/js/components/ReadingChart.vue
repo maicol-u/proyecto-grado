@@ -30,8 +30,45 @@ const props = defineProps({
 
 const readings = ref([])
 const loading = ref(true)
-let idInterval = null;
 const range = ref('live')
+
+function applyIncomingReading(reading) {
+    if (range.value !== 'live') {
+        return
+    }
+
+    const parsedValue = Number.parseFloat(reading?.value)
+
+    if (!Number.isFinite(parsedValue)) {
+        return
+    }
+
+    const nextReading = {
+        reading_id: reading.reading_id ?? null,
+        time: reading.time ?? new Date().toISOString(),
+        value: parsedValue,
+    }
+
+    const existingIndex = readings.value.findIndex(item => item.reading_id === nextReading.reading_id)
+
+    if (existingIndex !== -1) {
+        return
+    }
+
+    readings.value = [...readings.value, nextReading].slice(-50)
+}
+
+function subscribeToSensorChannel() {
+    if (!window.Echo) {
+        console.warn('Echo no esta disponible. El grafico no recibira actualizaciones en tiempo real.')
+        return
+    }
+
+    window.Echo.private(`sensor.${props.sensorId}`)
+        .listen('.reading.created', (event) => {
+            applyIncomingReading(event)
+        })
+}
 
 // Cargar datos desde endpoint
 async function loadData() {
@@ -46,8 +83,6 @@ async function loadData() {
         loading.value = false
     }
 }
-
-onMounted(loadData)
 
 //  Data del gráfico
 const chartData = computed(() => ({
@@ -96,11 +131,11 @@ function formatDate(date) {
 
 onMounted(() => {
     loadData()
-    idInterval = setInterval(loadData, 5000)
+    subscribeToSensorChannel()
 })
 
 onUnmounted(() => {
-    clearInterval(idInterval)
+    window.Echo?.leave(`sensor.${props.sensorId}`)
 })
 </script>
 
