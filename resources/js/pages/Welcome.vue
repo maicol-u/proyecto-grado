@@ -40,10 +40,10 @@ withDefaults(
                         
                         <h1
                             class="max-w-2xl text-2xl font-semibold leading-tight text-[#14211d] sm:text-2xl lg:text-4xl dark:text-[#f4f0e8]">
-                            Sistema de monitorizacion remota de la humedad del suelo
+                            Sistema de monitorización remota de la humedad del suelo
                         </h1>
                         <p class="max-w-xl text-sm leading-7 text-[#4b544e] sm:text-base dark:text-[#c7cec9]">
-                            Supervision de lecturas en tiempo real, deteccion de alertas tempranas y centralizacion de datos para una gestion eficiente del riego y el cultivo.
+                            Supervisión de lecturas en tiempo real, detección de alertas tempranas y centralización de datos para una gestión eficiente del riego y el cultivo.
                         </p>
                     </div>
                     <div
@@ -54,13 +54,13 @@ withDefaults(
                             class="rounded-2xl border border-black/5 bg-black/[0.02] p-4 dark:border-white/10 dark:bg-white/[0.03]">
                             <p class="text-xs uppercase tracking-[0.22em] text-[#8b6b2e] dark:text-[#d7bc75]">Programa
                             </p>
-                            <p class="mt-2 text-base font-medium">Ingenieria en Telematica</p>
+                            <p class="mt-2 text-base font-medium">Ingeniería en Telemática</p>
                         </div>
                         <div
                             class="rounded-2xl border border-black/5 bg-black/[0.02] p-4 dark:border-white/10 dark:bg-white/[0.03]">
                             <p class="text-xs uppercase tracking-[0.22em] text-[#8b6b2e] dark:text-[#d7bc75]">
-                                Institucion</p>
-                            <p class="mt-2 text-base font-medium">Universidad Distrital Francisco Jose de Caldas</p>
+                                Institución</p>
+                            <p class="mt-2 text-base font-medium">Universidad Distrital Francisco José de Caldas</p>
                         </div>
                     </div>
                     <div class="flex flex-wrap gap-3 pt-2">
@@ -71,7 +71,7 @@ withDefaults(
                         <template v-else>
                             <Link :href="login()"
                                 class="inline-flex items-center justify-center rounded-full bg-[#1f5c52] px-5 py-3 text-sm font-semibold text-white transition hover:bg-[#17463f] dark:bg-[#8dd3bb] dark:text-[#10201c] dark:hover:bg-[#74c2a8]">
-                                Iniciar sesion
+                                Iniciar sesión
                             </Link>
                         </template>
                     </div>
