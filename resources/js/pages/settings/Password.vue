@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import PasswordController from '@/actions/App/Http/Controllers/Settings/PasswordController';
 import InputError from '@/components/InputError.vue';
-import AppLayout from '@/layouts/AppLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
+import SettingsPageLayout from '@/layouts/settings/PageLayout.vue';
 import { edit } from '@/routes/user-password';
 import { Form, Head } from '@inertiajs/vue3';
 
@@ -21,7 +21,7 @@ const breadcrumbItems: BreadcrumbItem[] = [
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbItems">
+    <SettingsPageLayout :breadcrumbs="breadcrumbItems">
         <Head title="Configuración de la contraseña" />
 
         <SettingsLayout>
@@ -106,5 +106,5 @@ const breadcrumbItems: BreadcrumbItem[] = [
                 </Form>
             </div>
         </SettingsLayout>
-    </AppLayout>
+    </SettingsPageLayout>
 </template>

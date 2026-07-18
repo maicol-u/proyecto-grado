@@ -10,7 +10,7 @@ import InputError from '@/components/InputError.vue';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import AppLayout from '@/layouts/AppLayout.vue';
+import SettingsPageLayout from '@/layouts/settings/PageLayout.vue';
 import SettingsLayout from '@/layouts/settings/Layout.vue';
 import { type BreadcrumbItem } from '@/types';
 
@@ -33,7 +33,7 @@ const user = page.props.auth.user;
 </script>
 
 <template>
-    <AppLayout :breadcrumbs="breadcrumbItems">
+    <SettingsPageLayout :breadcrumbs="breadcrumbItems">
 
         <Head title="Profile settings" />
 
@@ -86,5 +86,5 @@ const user = page.props.auth.user;
 
             <DeleteUser />
         </SettingsLayout>
-    </AppLayout>
+    </SettingsPageLayout>
 </template>
