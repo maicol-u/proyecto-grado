@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Custumer;
+namespace App\Http\Controllers\Customer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Crop;
@@ -8,7 +8,7 @@ use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
 
-class CustumerDashboardController extends Controller
+class CustomerDashboardController extends Controller
 {
     public function index(Request $request): Response
     {
@@ -23,7 +23,7 @@ class CustumerDashboardController extends Controller
         ]);
     }
 
-    public function showCropCustumer(Request $request, Crop $invernadero): Response
+    public function showCropCustomer(Request $request, Crop $invernadero): Response
     {
         abort_unless(
             $request->user()->crops()->whereKey($invernadero->id)->exists(),
@@ -37,7 +37,7 @@ class CustumerDashboardController extends Controller
                 'sensors:id,crop_id,name,model,unit,status',
             ]);
 
-        return Inertia::render('custumer/CropDashboard', [
+        return Inertia::render('customer/CropDashboard', [
             'crop' => $crop,
         ]);
     }

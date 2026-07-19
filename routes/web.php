@@ -3,7 +3,7 @@
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\CropController;
-use App\Http\Controllers\Custumer\CustumerDashboardController;
+use App\Http\Controllers\Customer\CustomerDashboardController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorReadingController;
 use App\Http\Controllers\UserController;
@@ -17,9 +17,7 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', [CustumerDashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-Route::get('invernadero/{invernadero}/ver', [CustumerDashboardController::class, 'showCropCustumer'])->middleware(['auth'])->name('dashboard.crop.show');
-Route::get('sensors/{sensor}', [SensorController::class, 'show'])->middleware(['auth'])->name('sensors.show');
+Route::get('dashboard', [CustomerDashboardController::class, 'index'])->middleware(['auth', 'redirect_role'])->name('dashboard');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -29,13 +27,18 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::post('/invernadero/{invernadero}/vincular', [CropController::class, 'attachUser']);
     Route::delete('/invernaderos/{invernadero}/users/{user}', [CropController::class, 'detachUser']);
     Route::resource('sensors', SensorController::class)->except(['show']);
-    Route::resource('alerts', AlertController::class)->only(['index', 'show', 'destroy']);
 });
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/sensors/{id}/chart', [SensorReadingController::class, 'chart']);
+    Route::resource('alerts', AlertController::class)->only(['index', 'show', 'destroy']);
+    Route::get('sensors/{sensor}', [SensorController::class, 'show'])->name('sensors.show');    
 });
 
-
+Route::middleware(['auth', 'role:customer'])->group(function () {
+   Route::get('invernadero/{invernadero}/ver', [CustomerDashboardController::class, 'showCropCustomer'])->name('dashboard.crop.show');
+    Route::get('client/settings', [App\Http\Controllers\Customer\ConfigParamsController::class, 'index'])->name('client.settings');
+    Route::put('client/settings', [App\Http\Controllers\Customer\ConfigParamsController::class, 'update'])->name('client.settings.update');
+});
 
 require __DIR__.'/settings.php';

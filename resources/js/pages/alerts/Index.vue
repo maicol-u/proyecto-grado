@@ -1,13 +1,19 @@
 <script setup>
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
 import { Button } from '@/components/ui/button'
 import { Link } from '@inertiajs/vue3'
 import { usePage } from '@inertiajs/vue3'
 import Alert from '@/components/Alert.vue'
 import Swal from 'sweetalert2'
 import { router } from '@inertiajs/vue3'
+import { computed } from 'vue'
 
 const page = usePage()
+
+const layoutComponent = computed(() =>
+    page.props.auth.user.role === 'admin' ? AdminLayout : AppLayout,
+)
 
 defineProps({
     alerts: Object
@@ -52,7 +58,7 @@ function confirmDelete(id) {
 </script>
 
 <template>
-    <AdminLayout>
+    <component :is="layoutComponent">
         <div class="p-6">
 
             <Alert v-if="$page.props.flash?.success" :message="$page.props.flash.success" variant="success"
@@ -132,5 +138,5 @@ function confirmDelete(id) {
                 </template>
             </div>
         </div>
-    </AdminLayout>
+    </component>
 </template>

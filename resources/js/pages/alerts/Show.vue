@@ -1,11 +1,17 @@
 <script setup>
 import AdminLayout from '@/layouts/AdminLayout.vue'
+import AppLayout from '@/layouts/AppLayout.vue'
 import { usePage } from '@inertiajs/vue3'
 import Swal from 'sweetalert2'
 import { router } from '@inertiajs/vue3'
 import { Button } from '@/components/ui/button'
+import { computed } from 'vue'
 
 const page = usePage()
+
+const layoutComponent = computed(() =>
+    page.props.auth.user.role === 'admin' ? AdminLayout : AppLayout,
+)
 
 defineProps({
     alert: Object
@@ -50,7 +56,7 @@ function confirmDelete(id) {
 </script>
 
 <template>
-    <AdminLayout>
+    <component :is="layoutComponent">
         <div class="p-6">
             <div class="max-w-2xl rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                 <h1 class="mb-4 text-2xl font-semibold text-slate-900 text-gray-800">
@@ -102,5 +108,5 @@ function confirmDelete(id) {
                 </div>
             </div>
         </div>
-    </AdminLayout>
+    </component>
 </template>
