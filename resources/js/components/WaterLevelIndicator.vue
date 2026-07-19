@@ -126,7 +126,7 @@ const aggregationLabel = computed(() => {
         return `Promedio de ${Math.max(1, props.averageCount)} lecturas`
     }
 
-    return 'Ultima lectura'
+    return 'Última lectura'
 })
 
 const lastUpdated = computed(() => {

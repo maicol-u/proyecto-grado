@@ -29,7 +29,7 @@ const props = defineProps<{
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
-        title: 'Dashboard',
+        title: 'invernadero',
         href: dashboard().url,
     },
     {
@@ -56,6 +56,7 @@ function sensorStatusClass(status: string) {
 </script>
 
 <template>
+
     <Head :title="crop.name" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
@@ -72,14 +73,14 @@ function sensorStatusClass(status: string) {
                     </div>
 
                     <div>
-                        <p class="text-sm text-gray-500">Ubicacion</p>
+                        <p class="text-sm text-gray-500">Ubicación</p>
                         <p class="font-medium">{{ crop.location || '-' }}</p>
                     </div>
                 </div>
 
                 <div class="space-y-3">
                     <div>
-                        <p class="text-sm text-gray-500">Descripcion</p>
+                        <p class="text-sm text-gray-500">Descripción</p>
                         <p class="font-medium">{{ crop.description || '-' }}</p>
                     </div>
 
@@ -98,29 +99,13 @@ function sensorStatusClass(status: string) {
                     Este invernadero no tiene sensores registrados.
                 </div>
 
-                <div v-else class="flex gap-4 overflow-x-auto pb-2">
-                    <Link
-                        v-for="sensor in crop.sensors"
-                        :key="sensor.id"
-                        :href="`/sensors/${sensor.id}`"
-                        class="block min-w-[280px] max-w-[280px] rounded-lg p-3 transition"
-                    >
-                        <WaterLevelIndicator
-                            :sensor-id="sensor.id"
-                            :unit="sensor.unit || '%'"
-                            title="Nivel actual"
-                            aggregation-mode="latest"
-                            :average-count="1"
-                            compact
-                        />
+                <div v-else class="flex flex-col gap-4 pb-2 lg:flex-row lg:overflow-x-auto">
+                    <Link v-for="sensor in crop.sensors" :key="sensor.id" :href="`/sensors/${sensor.id}`"
+                        class="block w-full rounded-lg p-3 transition min-w-[240px] lg:max-w-[280px]">
+                        <WaterLevelIndicator :sensor-id="sensor.id" :unit="sensor.unit || '%'" title="Nivel actual"
+                            aggregation-mode="latest" :average-count="1" compact />
                     </Link>
                 </div>
-            </div>
-
-            <div class="mt-6">
-                <Link href="/dashboard" class="text-sm text-sky-700 hover:underline">
-                    Volver al dashboard
-                </Link>
             </div>
         </div>
     </AppLayout>

@@ -43,7 +43,7 @@ const breadcrumbs: BreadcrumbItem[] = [
                     </h2>
 
                     <p class="text-sm text-gray-600">
-                        Ubicacion: {{ crop.location || 'Sin ubicacion registrada' }}
+                        Ubicación: {{ crop.location || 'Sin ubicación registrada' }}
                     </p>
 
                     <p class="mt-2 text-sm">
