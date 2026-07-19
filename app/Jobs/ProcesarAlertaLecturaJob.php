@@ -8,6 +8,7 @@ use App\Models\Reading;
 use App\Notifications\AlertaLecturaNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
+use App\Services\TextbeltService;
 
 class ProcesarAlertaLecturaJob implements ShouldQueue
 {
@@ -27,14 +28,14 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(TextbeltService  $textbelt): void
     {
         $this->reading->load([
             'sensor.crop.users'
         ]);
 
         $sensor = $this->reading->sensor;
-        $crop = $sensor->crop;
+        $crop = $sensor->crop; 
 
         $valMax = $sensor->max_value;
         $valMin = $sensor->min_value;
@@ -61,12 +62,24 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
         ]);
 
         foreach ($crop->users as $usuario) { 
+
+            // Email notification
             $usuario->notify(
                 new AlertaLecturaNotification(
                     $title,
                     $this->reading
                 )
             );
+
+            // SMS notification
+            $date = $this->reading->recorded_at?->format('d/m/Y H:i:s') ?? 'No disponible';
+            if ($usuario->phone_number) {
+                $message = "Alerta en humedad del suelo - {$title}\nInvernadero: {$crop->name}\n
+Sensor: {$sensor->name}\nValor detectado: {$this->reading->value}\n
+Fecha y hora de la lectura: {$date}\nSe ha detectado una lectura fuera del rango permitido.";
+             
+                $textbelt->send($usuario->phone_number, $message);
+            }
         }
 
     }

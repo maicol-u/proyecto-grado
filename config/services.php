@@ -35,4 +35,10 @@ return [
         ],
     ],
 
+    'textbelt' => [
+        'url' => env('TEXTBELT_URL', 'https://textbelt.com/text'),
+        'key' => env('TEXTBELT_KEY'),
+        'sender' => env('TEXTBELT_SENDER', 'Telematica'),
+    ],
+
 ];
