@@ -26,6 +26,10 @@ const props = defineProps({
     title: {
         type: String,
         default: 'Indicador de humedad'
+    },
+    compact: {
+        type: Boolean,
+        default: false
     }
 })
 
@@ -151,40 +155,40 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <section class="indicator-card rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
-        <div class="mb-4 flex items-start justify-between gap-3">
+    <section class="indicator-card rounded-3xl border border-slate-200 bg-white shadow-sm" :class="props.compact ? 'p-3' : 'p-5'">
+        <div class="flex items-start justify-between gap-3" :class="props.compact ? 'mb-3' : 'mb-4'">
             <div>
-                <p class="text-sm font-medium uppercase tracking-[0.2em] text-slate-400">
+                <p class="font-medium uppercase tracking-[0.2em] text-slate-400" :class="props.compact ? 'text-[10px]' : 'text-sm'">
                     Sensor {{ sensorId }}
                 </p>
-                <h2 class="mt-1 text-xl font-semibold text-slate-800">
+                <h2 class="mt-1 font-semibold text-slate-800" :class="props.compact ? 'text-base' : 'text-xl'">
                     {{ title }}
                 </h2>
-                <p class="mt-2 text-sm text-slate-500">
+                <p class="mt-2 text-slate-500" :class="props.compact ? 'text-xs' : 'text-sm'">
                     {{ aggregationLabel }}
                 </p>
             </div>
 
-            <div class="rounded-full bg-sky-50 px-3 py-1 text-xs font-semibold text-sky-700">
+            <div class="rounded-full bg-sky-50 font-semibold text-sky-700" :class="props.compact ? 'px-2 py-1 text-[10px]' : 'px-3 py-1 text-xs'">
                 Humedad
             </div>
         </div>
 
-        <div v-if="loading" class="flex min-h-[250px] items-center justify-center text-sm text-slate-500">
+        <div v-if="loading" class="flex items-center justify-center text-slate-500" :class="props.compact ? 'min-h-[170px] text-xs' : 'min-h-[250px] text-sm'">
             Cargando indicador...
         </div>
 
-        <div v-else-if="fetchError" class="flex min-h-[250px] items-center justify-center text-sm text-red-500">
+        <div v-else-if="fetchError" class="flex items-center justify-center text-red-500" :class="props.compact ? 'min-h-[170px] text-xs' : 'min-h-[250px] text-sm'">
             No fue posible cargar las lecturas.
         </div>
 
-        <div v-else-if="!normalizedValues.length" class="flex min-h-[250px] items-center justify-center text-sm text-slate-500">
+        <div v-else-if="!normalizedValues.length" class="flex items-center justify-center text-slate-500" :class="props.compact ? 'min-h-[170px] text-xs' : 'min-h-[250px] text-sm'">
             No hay lecturas disponibles.
         </div>
 
         <div v-else>
             <div class="flex items-center justify-center">
-                <div class="water-gauge">
+                <div class="water-gauge" :class="props.compact ? 'water-gauge-compact' : ''">
                     <div class="water-shell">
                         <div class="water-fill" :style="{ height: levelHeight }">
                             <div class="wave wave-back"></div>
@@ -199,19 +203,19 @@ onUnmounted(() => {
                 </div>
             </div>
 
-            <div class="mt-5 grid grid-cols-2 gap-3 text-sm">
-                <div class="rounded-2xl bg-slate-50 px-3 py-2.5">
+            <div class="grid grid-cols-2 gap-3" :class="props.compact ? 'mt-3 text-xs' : 'mt-5 text-sm'">
+                <div class="rounded-2xl bg-slate-50" :class="props.compact ? 'px-2.5 py-2' : 'px-3 py-2.5'">
                     <p class="text-slate-500">Nivel de humedad</p>
-                    <p class="mt-1 text-lg font-semibold text-slate-800">{{ levelLabel }}</p>
+                    <p class="mt-1 font-semibold text-slate-800" :class="props.compact ? 'text-base' : 'text-lg'">{{ levelLabel }}</p>
                 </div>
 
-                <div class="rounded-2xl bg-slate-50 px-3 py-2.5">
+                <div class="rounded-2xl bg-slate-50" :class="props.compact ? 'px-2.5 py-2' : 'px-3 py-2.5'">
                     <p class="text-slate-500">Sensor ID</p>
-                    <p class="mt-1 text-lg font-semibold text-slate-800">{{ sensorId }}</p>
+                    <p class="mt-1 font-semibold text-slate-800" :class="props.compact ? 'text-base' : 'text-lg'">{{ sensorId }}</p>
                 </div>
             </div>
 
-            <p v-if="lastUpdated" class="mt-4 text-center text-xs text-slate-400">
+            <p v-if="lastUpdated" class="text-center text-slate-400" :class="props.compact ? 'mt-3 text-[11px]' : 'mt-4 text-xs'">
                 Actualizado: {{ lastUpdated }}
             </p>
         </div>
@@ -233,6 +237,11 @@ onUnmounted(() => {
     height: 190px;
 }
 
+.water-gauge-compact {
+    width: 130px;
+    height: 130px;
+}
+
 .water-shell {
     position: relative;
     width: 100%;
@@ -252,7 +261,7 @@ onUnmounted(() => {
     left: 0;
     width: 100%;
     background: linear-gradient(180deg, #5fb4ff 0%, #3182ce 100%);
-    transition: height 0.5s ease;
+    transition: height 0.9s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .wave {
@@ -262,18 +271,20 @@ onUnmounted(() => {
     width: 120%;
     height: 28px;
     border-radius: 45%;
+    transform-origin: center;
+    will-change: transform;
 }
 
 .wave-back {
     background: rgba(255, 255, 255, 0.28);
-    animation: drift 3s linear infinite;
+    animation: drift 4.8s ease-in-out infinite;
 }
 
 .wave-front {
     top: -8px;
     background: rgba(255, 255, 255, 0.8);
     opacity: 0.7;
-    animation: driftReverse 3s linear infinite;
+    animation: driftReverse 6.2s ease-in-out infinite;
 }
 
 .gauge-gloss {
@@ -302,22 +313,46 @@ onUnmounted(() => {
 }
 
 @keyframes drift {
-    from {
-        transform: translateX(-4%);
+    0% {
+        transform: translate3d(-5%, 0, 0) rotate(-1deg) scaleX(1.01);
     }
 
-    to {
-        transform: translateX(4%);
+    25% {
+        transform: translate3d(-1.5%, -3px, 0) rotate(0.4deg) scaleX(1.03);
+    }
+
+    50% {
+        transform: translate3d(3.5%, -1px, 0) rotate(1deg) scaleX(0.99);
+    }
+
+    75% {
+        transform: translate3d(1%, -4px, 0) rotate(0deg) scaleX(1.02);
+    }
+
+    100% {
+        transform: translate3d(-5%, 0, 0) rotate(-1deg) scaleX(1.01);
     }
 }
 
 @keyframes driftReverse {
-    from {
-        transform: translateX(5%);
+    0% {
+        transform: translate3d(5%, 0, 0) rotate(0.8deg) scaleX(1);
     }
 
-    to {
-        transform: translateX(-5%);
+    20% {
+        transform: translate3d(2%, -2px, 0) rotate(0deg) scaleX(1.02);
+    }
+
+    50% {
+        transform: translate3d(-3.5%, -3px, 0) rotate(-0.8deg) scaleX(1.01);
+    }
+
+    80% {
+        transform: translate3d(-1%, -1px, 0) rotate(0.2deg) scaleX(0.99);
+    }
+
+    100% {
+        transform: translate3d(5%, 0, 0) rotate(0.8deg) scaleX(1);
     }
 }
 </style>

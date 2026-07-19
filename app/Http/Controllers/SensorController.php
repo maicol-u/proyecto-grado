@@ -71,13 +71,15 @@ class SensorController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show(Request $request, Sensor $sensor)
     {
-        $sensor = Sensor::with(['crop', 'type'])->findOrFail($id);
+        $this->authorizeSensorAccess($request, $sensor);
+
+        $sensor->load(['crop', 'type']);
 
         $readings = $sensor->readings()
             ->latest('recorded_at')
-            ->paginate(10);
+            ->paginate(20);
 
         return Inertia::render('sensors/Show', [
             'sensor' => $sensor,
@@ -131,5 +133,20 @@ class SensorController extends Controller
         $sensor->delete();
 
         return redirect()->route('sensors.index')->with('success', 'Sensor eliminado correctamente');
+    }
+
+    private function authorizeSensorAccess(Request $request, Sensor $sensor): void
+    {
+        $user = $request->user();
+
+        if ($user->isAdmin()) {
+            return;
+        }
+
+        abort_unless(
+            $user->crops()->whereKey($sensor->crop_id)->exists(),
+            403,
+            'No tienes acceso a este sensor.'
+        );
     }
 }

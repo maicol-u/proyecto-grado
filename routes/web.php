@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\AlertController;
 use App\Http\Controllers\CropController;
+use App\Http\Controllers\Custumer\CustumerDashboardController;
 use App\Http\Controllers\SensorController;
 use App\Http\Controllers\SensorReadingController;
 use App\Http\Controllers\UserController;
@@ -16,9 +17,9 @@ Route::get('/', function () {
     ]);
 })->name('home');
 
-Route::get('dashboard', function () {
-    return Inertia::render('Dashboard');
-})->middleware(['auth', 'verified', 'redirect_role'])->name('dashboard');
+Route::get('dashboard', [CustumerDashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
+Route::get('invernadero/{invernadero}/ver', [CustumerDashboardController::class, 'showCropCustumer'])->middleware(['auth'])->name('dashboard.crop.show');
+Route::get('sensors/{sensor}', [SensorController::class, 'show'])->middleware(['auth'])->name('sensors.show');
 
 Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('admin/dashboard', [AdminDashboardController::class, 'index'])->name('admin.dashboard');
@@ -27,7 +28,7 @@ Route::middleware(['auth', 'role:admin'])->group(function () {
     Route::get('/user/search', [UserController::class, 'search'])->name('user.search');
     Route::post('/invernadero/{invernadero}/vincular', [CropController::class, 'attachUser']);
     Route::delete('/invernaderos/{invernadero}/users/{user}', [CropController::class, 'detachUser']);
-    Route::resource('sensors', SensorController::class);
+    Route::resource('sensors', SensorController::class)->except(['show']);
     Route::resource('alerts', AlertController::class)->only(['index', 'show', 'destroy']);
 });
 

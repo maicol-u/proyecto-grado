@@ -2,8 +2,18 @@
 import AppLayout from '@/layouts/AppLayout.vue';
 import { dashboard } from '@/routes';
 import { type BreadcrumbItem } from '@/types';
-import { Head } from '@inertiajs/vue3';
-import PlaceholderPattern from '../components/PlaceholderPattern.vue';
+import { Head, Link } from '@inertiajs/vue3';
+
+type Crop = {
+    id: number;
+    name: string;
+    location: string | null;
+    sensors_count: number;
+};
+
+defineProps<{
+    crops: Crop[];
+}>();
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -14,33 +24,32 @@ const breadcrumbs: BreadcrumbItem[] = [
 </script>
 
 <template>
+
     <Head title="Dashboard" />
 
     <AppLayout :breadcrumbs="breadcrumbs">
-        <div
-            class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4"
-        >
-            <div class="grid auto-rows-min gap-4 md:grid-cols-3">
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-                <div
-                    class="relative aspect-video overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border"
-                >
-                    <PlaceholderPattern />
-                </div>
-            </div>
-            <div
-                class="relative min-h-[100vh] flex-1 rounded-xl border border-sidebar-border/70 md:min-h-min dark:border-sidebar-border"
-            >
-                <PlaceholderPattern />
+        <div class="flex h-full flex-1 flex-col gap-4 overflow-x-auto rounded-xl p-4">
+            <h1 class="text-2xl font-semibold">Mis invernaderos</h1>
+
+            <p v-if="crops.length === 0" class="text-sm text-muted-foreground">
+                No tienes invernaderos asociados.
+            </p>
+
+            <div v-else class="flex gap-4 overflow-x-auto pb-2">
+                <Link v-for="crop in crops" :key="crop.id" :href="`/invernadero/${crop.id}/ver`"
+                    class="border rounded-lg p-4 shadow cursor-pointer hover:border-sky-600">
+                    <h2 class="text-lg font-semibold">
+                        {{ crop.name }}
+                    </h2>
+
+                    <p class="text-sm text-gray-600">
+                        Ubicacion: {{ crop.location || 'Sin ubicacion registrada' }}
+                    </p>
+
+                    <p class="mt-2 text-sm">
+                        Sensores vinculados: {{ crop.sensors_count }}
+                    </p>
+                </Link>
             </div>
         </div>
     </AppLayout>

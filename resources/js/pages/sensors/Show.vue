@@ -1,7 +1,8 @@
 <script setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import AdminLayout from '@/layouts/AdminLayout.vue'
-import { Link } from '@inertiajs/vue3'
+import AppLayout from '@/layouts/AppLayout.vue'
+import { Link, usePage } from '@inertiajs/vue3'
 import ReadingChart from '@/components/ReadingChart.vue'
 import WaterLevelIndicator from '@/components/WaterLevelIndicator.vue'
 
@@ -9,6 +10,9 @@ const props = defineProps({
     sensor: Object,
     readings: Object, // paginado
 })
+
+const page = usePage()
+const layoutComponent = computed(() => page.props.auth?.user?.role === 'admin' ? AdminLayout : AppLayout)
 
 const currentAlertLevel = ref(props.sensor?.alert_level)
 const lastSignalAt = ref(props.readings?.data?.[0]?.recorded_at ? new Date(props.readings.data[0].recorded_at) : null)
@@ -111,7 +115,7 @@ function timeAgo(date) {
 </script>
 
 <template>
-    <AdminLayout>
+    <component :is="layoutComponent">
         <div class="p-6">
 
             <!-- Título -->
@@ -230,19 +234,19 @@ function timeAgo(date) {
                                 <tbody class="divide-y divide-gray-200 text-gray-700">
                                     <tr v-for="reading in readings.data" :key="reading.id" class="hover:bg-gray-50">
 
-                                        <td class="px-4 py-1">
+                                        <td class="px-4 py-0.5">
                                             {{ reading.id }}
                                         </td>
 
-                                        <td class="px-4 py-1">
+                                        <td class="px-4 py-0.5">
                                             {{ reading.value }}
                                         </td>
 
-                                        <td class="px-4 py-1">
+                                        <td class="px-4 py-0.5">
                                             {{ sensor.unit }}
                                         </td>
 
-                                        <td class="px-4 py-1">
+                                        <td class="px-4 py-0.5">
                                             {{ timeAgo(reading.recorded_at) }}
                                         </td>
 
@@ -273,5 +277,5 @@ function timeAgo(date) {
                 </div>
 
         </div>
-    </AdminLayout>
+    </component>
 </template>

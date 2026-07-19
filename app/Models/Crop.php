@@ -30,6 +30,6 @@ class Crop extends Model
      */
     public function sensors(): HasMany
     {
-        return $this->hasMany(Sensor::class, 'sensor_id');
+        return $this->hasMany(Sensor::class, 'crop_id');
     }
 }

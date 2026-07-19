@@ -13,6 +13,13 @@ class SensorReadingController extends Controller
     public function chart(Request $request, $id)
     {
         $sensor = Sensor::findOrFail($id);
+        $user = $request->user();
+
+        abort_unless(
+            $user->isAdmin() || $user->crops()->whereKey($sensor->crop_id)->exists(),
+            403,
+            'No tienes acceso a este sensor.'
+        );
 
         $range = $request->get('range', 'live');
 
