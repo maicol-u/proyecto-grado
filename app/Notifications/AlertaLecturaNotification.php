@@ -41,7 +41,7 @@ class AlertaLecturaNotification extends Notification
         $this->reading->loadMissing('sensor.crop');
 
         $crop = $this->reading->sensor?->crop;
-        $formattedRecordedAt = $this->reading->recorded_at?->format('d/m/Y H:i:s') ?? 'No disponible';
+        $formattedRecordedAt = $this->reading->recorded_at?->format('d/m/Y h:i:s A') ?? 'No disponible';
 
         return (new MailMessage)
             ->subject($this->title)

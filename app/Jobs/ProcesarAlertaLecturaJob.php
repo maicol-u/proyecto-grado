@@ -72,7 +72,7 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
             );
 
             // SMS notification
-            $date = $this->reading->recorded_at?->format('d/m/Y H:i:s') ?? 'No disponible';
+            $date = $this->reading->recorded_at?->format('d/m/Y h:i:s A') ?? 'No disponible';
             if ($usuario->phone_number) {
                 $message = "Alerta en humedad del suelo: {$title}\n
 Invernadero: {$crop->name}\n
