@@ -76,7 +76,7 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
             if ($usuario->phone_number) {
                 $message = "Alerta en humedad del suelo: {$title}\n
 Invernadero: {$crop->name}\n
-Sensor: {$sensor->name}\nValor detectado: {$this->reading->value}\n
+Sensor: {$sensor->name}\nValor detectado: {$this->reading->value} {$sensor->unit}\n
 Fecha y hora de la lectura: {$date}\n
 Sistema de monitorización.\n";
              

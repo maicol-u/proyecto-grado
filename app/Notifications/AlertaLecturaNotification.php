@@ -48,7 +48,7 @@ class AlertaLecturaNotification extends Notification
             ->greeting('⚠️ Alerta en humedad del suelo - '.$this->title)
             ->line("Invernadero: {$crop->name}")
             ->line("Sensor: {$this->reading->sensor->name}")
-            ->line("Valor detectado: {$this->reading->value}")
+            ->line("Valor detectado: {$this->reading->value} {$this->reading->sensor->unit}")
             ->line("Fecha y hora de la lectura: {$formattedRecordedAt}")
             ->line('Se ha detectado una lectura fuera del rango permitido.')
             ->salutation('Sistema de Monitoreo de Invernaderos');
