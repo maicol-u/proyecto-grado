@@ -74,9 +74,11 @@ class ProcesarAlertaLecturaJob implements ShouldQueue
             // SMS notification
             $date = $this->reading->recorded_at?->format('d/m/Y H:i:s') ?? 'No disponible';
             if ($usuario->phone_number) {
-                $message = "Alerta en humedad del suelo - {$title}\nInvernadero: {$crop->name}\n
+                $message = "Alerta en humedad del suelo: {$title}\n
+Invernadero: {$crop->name}\n
 Sensor: {$sensor->name}\nValor detectado: {$this->reading->value}\n
-Fecha y hora de la lectura: {$date}\nSe ha detectado una lectura fuera del rango permitido.";
+Fecha y hora de la lectura: {$date}\n
+Sistema de monitorización.\n";
              
                 $textbelt->send($usuario->phone_number, $message);
             }
