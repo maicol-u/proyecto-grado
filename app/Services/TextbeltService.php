@@ -25,10 +25,16 @@ class TextbeltService
      */
     public function send(string $phone, string $message): array
     {
+        Log::info('Numero de celular recibido para envio SMS.', [
+            'phone' => $phone,
+        ]);
+
+        $normalizedPhone = $this->normalizeColombianPhone($phone);
+
         $response = Http::asForm()
             ->timeout(10)
             ->post($this->url, [
-                'phone'   => $this->normalizeColombianPhone($phone),
+                'phone'   => $normalizedPhone,
                 'message' => $message,
                 'key'     => config('services.textbelt.key'),
                 'sender'  => config('services.textbelt.sender', 'Telematica'),
