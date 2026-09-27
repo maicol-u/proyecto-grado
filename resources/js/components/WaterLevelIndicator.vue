@@ -305,7 +305,7 @@ onUnmounted(() => {
 }
 
 .value-number {
-    font-size: 2.2rem;
+    font-size: 2.5rem;
     line-height: 1;
     font-weight: 300;
     color: #1c4067;
