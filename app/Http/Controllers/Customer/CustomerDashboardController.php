@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers\Customer;
 
+use App\Exports\CropReadingsExport;
 use App\Http\Controllers\Controller;
 use App\Models\Crop;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Maatwebsite\Excel\Excel;
 
 class CustomerDashboardController extends Controller
 {
@@ -40,5 +42,22 @@ class CustomerDashboardController extends Controller
         return Inertia::render('customer/CropDashboard', [
             'crop' => $crop,
         ]);
+    }
+
+    public function exportReadings(Request $request, Crop $invernadero, Excel $excel)
+    {
+        abort_unless(
+            $request->user()->crops()->whereKey($invernadero->id)->exists(),
+            403,
+            'No tienes acceso a este invernadero.'
+        );
+
+        $fileName = sprintf(
+            'lecturas-invernadero-%s-%s.xlsx',
+            $invernadero->id,
+            now()->format('Y-m-d-His')
+        );
+
+        return $excel->download(new CropReadingsExport($invernadero), $fileName);
     }
 }

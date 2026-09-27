@@ -39,25 +39,17 @@ function formatDate(value) {
 
       <section class="grid gap-3 sm:grid-cols-2 xl:grid-cols-3">
         <article
-          v-for="(item, index) in stats"
+          v-for="item in stats"
           :key="item.label"
-          class="rounded-2xl border p-4 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md"
-          :class="[
-            index % 6 === 0 && 'border-sky-300 bg-sky-50',
-            index % 6 === 1 && 'border-emerald-300 bg-emerald-50',
-            index % 6 === 2 && 'border-amber-300 bg-amber-50',
-            index % 6 === 3 && 'border-rose-300 bg-rose-50',
-            index % 6 === 4 && 'border-violet-300 bg-violet-50',
-            index % 6 === 5 && 'border-cyan-300 bg-cyan-50',
-          ]"
+          class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:border-slate-300 hover:shadow-md"
         >
-          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">
+          <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
             {{ item.label }}
           </p>
-          <p class="mt-1 text-2xl font-semibold text-gray-600">
+          <p class="mt-2 text-2xl font-semibold tracking-tight text-slate-900">
             {{ item.value }}
           </p>
-          <p class="mt-1 text-md leading-5 text-slate-600">
+          <p class="mt-2 text-sm leading-5 text-slate-500">
             {{ item.description }}
           </p>
         </article>
@@ -75,7 +67,7 @@ function formatDate(value) {
           <div
             v-for="alert in recentAlerts"
             :key="alert.id"
-            class="flex flex-col gap-3 rounded-2xl border border-sky-100  bg-sky-50 to-amber-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
+            class="flex flex-col gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 sm:flex-row sm:items-center sm:justify-between"
           >
             <div>
               <p class="text-sm font-semibold text-slate-900">

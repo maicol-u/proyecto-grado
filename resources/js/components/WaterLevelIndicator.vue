@@ -308,7 +308,7 @@ onUnmounted(() => {
     font-size: 2.2rem;
     line-height: 1;
     font-weight: 300;
-    color: #f8fafc;
+    color: #1c4067;
     text-shadow: 0 3px 12px rgba(15, 23, 42, 0.2);
 }
 

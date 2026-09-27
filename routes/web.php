@@ -37,6 +37,7 @@ Route::middleware(['auth'])->group(function () {
 
 Route::middleware(['auth', 'role:customer'])->group(function () {
    Route::get('invernadero/{invernadero}/ver', [CustomerDashboardController::class, 'showCropCustomer'])->name('dashboard.crop.show');
+    Route::get('invernadero/{invernadero}/lecturas/exportar', [CustomerDashboardController::class, 'exportReadings'])->name('dashboard.crop.readings.export');
     Route::get('client/settings', [App\Http\Controllers\Customer\ConfigParamsController::class, 'index'])->name('client.settings');
     Route::put('client/settings', [App\Http\Controllers\Customer\ConfigParamsController::class, 'update'])->name('client.settings.update');
 });

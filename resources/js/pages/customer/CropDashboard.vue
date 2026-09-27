@@ -61,9 +61,18 @@ function sensorStatusClass(status: string) {
 
     <AppLayout :breadcrumbs="breadcrumbs">
         <div class="p-6">
-            <h1 class="mb-6 text-2xl font-bold">
-                Detalle del Invernadero
-            </h1>
+            <div class="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+                <h1 class="text-2xl font-bold">
+                    Detalle del Invernadero
+                </h1>
+
+                <a
+                    :href="`/invernadero/${crop.id}/lecturas/exportar`"
+                    class="inline-flex items-center justify-center rounded-md border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 shadow-sm transition hover:border-slate-400 hover:bg-slate-50"
+                >
+                    Descargar lecturas Excel
+                </a>
+            </div>
 
             <div class="mb-8 grid grid-cols-1 gap-6 md:grid-cols-3">
                 <div class="space-y-3">
