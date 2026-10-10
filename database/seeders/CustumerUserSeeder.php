@@ -18,9 +18,9 @@ class CustumerUserSeeder extends Seeder
         User::create([
             'id' => 10,
             'name' => 'Cliente',
-            'email' => 'maikolubaque@gmail.com',
-            'phone_number' => '3053469200',
-            'password' => bcrypt('Maicol-31'),
+            'email' => 'cliente@correo.com',
+            'phone_number' => '3050000000',
+            'password' => bcrypt('Cliente123'),
             'role' => UserRole::CUSTOMER,
         ]);
 
